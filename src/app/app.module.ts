@@ -17,6 +17,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { ItemCollectionGridComponent } from './views/item-collection/item-collection-grid/item-collection-grid.component';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { SuitCollectionComponent } from './views/suit-collection/suit-collection.component';
+import { SuitCollectionGridComponent } from './views/suit-collection/suit-collection-grid/suit-collection-grid.component';
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule
@@ -28,7 +30,9 @@ ModuleRegistry.registerModules([
     ItemCollectionComponent,
     SuitBuilderComponent,
     SuitConfigComponent,
-    ItemCollectionGridComponent
+    ItemCollectionGridComponent,
+    SuitCollectionComponent,
+    SuitCollectionGridComponent
   ],
   imports: [
     BrowserModule,

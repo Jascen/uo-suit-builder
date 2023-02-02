@@ -1,0 +1,9 @@
+<div class="page-header">
+    <h4>Suit Collection</h4>
+
+    <div class="page-actions">
+    </div>
+</div>
+
+<app-suit-collection-grid [properties]="properties$ | async" [rowData]="suits$ | async"
+    [loading]="false"></app-suit-collection-grid>

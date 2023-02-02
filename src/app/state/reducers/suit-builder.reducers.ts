@@ -1,7 +1,10 @@
-import { createReducer } from "@ngrx/store";
+import { createReducer, on } from "@ngrx/store";
+import { Suit } from "../models/suit-builder.models";
+import * as suitBuilderActions from '../actions/suit-builder.actions';
 
 
 export interface SuitBuilderState {
+    suits: Suit[]
 }
 
 export const initialState = {
@@ -9,4 +12,10 @@ export const initialState = {
 
 export const reducer = createReducer(
     initialState,
+    on(suitBuilderActions.UserActions.buildSuccess, (state, { suits }): SuitBuilderState => {
+        return {
+            ...state,
+            suits
+        }
+    })
 );
