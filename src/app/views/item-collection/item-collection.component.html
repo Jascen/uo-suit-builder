@@ -3,7 +3,7 @@
 
     <div class="page-actions">
         <input hidden (change)="onFileSelected($event)" #fileInput type="file">
-        <button mat-raised-button (click)="fileInput.click()" color="basic">Import Item List</button>
+        <button mat-flat-button (click)="fileInput.click()" color="basic">Import Item List</button>
 
         <button mat-raised-button color="primary" (click)="onBuildClicked()">Build</button>
     </div>
