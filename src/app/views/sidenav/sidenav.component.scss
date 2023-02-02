@@ -1,4 +1,12 @@
 app-sidenav {
     display: flex;
     flex-direction: column;
+
+    padding: 0.5rem;
+    border-right: solid 1px;
+    border-color: #68686e;
+
+    .mdc-button {
+        align-self: flex-start;
+    }
 }
