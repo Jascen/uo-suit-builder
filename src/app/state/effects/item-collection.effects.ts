@@ -22,15 +22,17 @@ export class ItemCollectionEffects {
                             properties: {}
                         } as Item;
 
+                        let hasProperties = false;
                         Object.keys(item).forEach(key => {
                             if (item[key] === null || (item[key] as any) === '') { return; }
                             if (key === 'name' || key === 'slot') { return; }
 
                             result.properties[key] = item[key];
+                            hasProperties = true;
                         });
 
-                        return result;
-                    })
+                        return hasProperties ? result : null;
+                    }).filter(item => item)
                 });
             })
         );
