@@ -19,6 +19,7 @@ import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { SuitCollectionComponent } from './views/suit-collection/suit-collection.component';
 import { SuitCollectionGridComponent } from './views/suit-collection/suit-collection-grid/suit-collection-grid.component';
+import { SidenavComponent } from './views/sidenav/sidenav.component';
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule
@@ -32,7 +33,8 @@ ModuleRegistry.registerModules([
     SuitConfigComponent,
     ItemCollectionGridComponent,
     SuitCollectionComponent,
-    SuitCollectionGridComponent
+    SuitCollectionGridComponent,
+    SidenavComponent
   ],
   imports: [
     BrowserModule,
