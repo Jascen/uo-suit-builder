@@ -1,0 +1,23 @@
+app-item-collection {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+
+    app-item-collection-grid {
+        flex: 1;
+    }
+
+    .page-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .page-actions {
+        display: flex;
+        justify-content: flex-end;
+
+        button + button {
+            margin-left: 1rem;
+        }
+    }
+}
