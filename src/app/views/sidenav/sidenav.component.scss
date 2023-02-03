@@ -7,6 +7,15 @@ app-sidenav {
     border-color: #68686e;
 
     .mdc-button {
-        align-self: flex-start;
+        justify-content: flex-start;
+        width: 150px;
+        font-size: 1.25rem;
+        padding: 1.5rem 0.5rem;
+
+        .mat-icon {
+            font-size: 1.5rem;
+            height: 1.5rem;
+            width: 1.5rem;
+        }
     }
 }
