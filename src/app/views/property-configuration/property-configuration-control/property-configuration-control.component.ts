@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, forwardRef, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, Validators } from '@angular/forms';
 import { Subject, takeUntil, tap } from 'rxjs';
 import { StatConfiguration } from 'src/app/state/models/suit-config.models';
 
@@ -23,10 +23,15 @@ interface PropertyForm {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
       useExisting: forwardRef(() => PropertyConfigurationControlComponent)
-    }
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => PropertyConfigurationControlComponent),
+      multi: true,
+    },
   ]
 })
-export class PropertyConfigurationControlComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class PropertyConfigurationControlComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
 
   private readonly _destroyed$ = new Subject();
 
@@ -34,6 +39,7 @@ export class PropertyConfigurationControlComponent implements OnInit, OnDestroy,
 
   private onChange = (property: StatConfiguration) => { };
   private onTouched = () => { };
+  private onValidate = () => { };
 
   valueChanged(property: StatConfiguration) {
     this.onTouched();
@@ -67,6 +73,20 @@ export class PropertyConfigurationControlComponent implements OnInit, OnDestroy,
       target: [null],
       maximum: [null],
     });
+  }
+
+  validate(control: AbstractControl<any, any>): ValidationErrors {
+    return Object.entries(this.form.controls).reduce((acc, [name, control]) => {
+      if (control.hasError) {
+        acc[name] = control;
+      }
+
+      return acc;
+    }, {} as ValidationErrors);
+  }
+
+  registerOnValidatorChange?(fn: () => void): void {
+    this.onValidate = fn;
   }
 
   ngOnInit(): void {

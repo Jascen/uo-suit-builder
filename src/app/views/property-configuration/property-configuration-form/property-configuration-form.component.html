@@ -11,6 +11,6 @@
 
     <div class="form-actions">
         <button type="button" mat-flat-button (click)="reset()" [disabled]="!form.dirty">Reset</button>
-        <button type="button" mat-raised-button color="primary" (click)="save()" [disabled]="!form.dirty">Save</button>
+        <button type="button" mat-raised-button color="primary" (click)="save()" [disabled]="!form.dirty || !form.valid">Save</button>
     </div>
 </form>
