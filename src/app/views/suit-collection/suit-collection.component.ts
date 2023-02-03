@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectAllSuits } from 'src/app/state/selectors/suit-builder.selectors';
-import { selectAllPropertyEntities } from 'src/app/state/selectors/suit-config.selectors';
+import { selectAllProperties } from 'src/app/state/selectors/suit-config.selectors';
 import { SuitCollectionGridComponent } from './suit-collection-grid/suit-collection-grid.component';
 
 
@@ -16,7 +16,7 @@ export class SuitCollectionComponent {
   @ViewChild(SuitCollectionGridComponent, { static: true }) gridComponent!: SuitCollectionGridComponent;
 
   readonly suits$ = this.store.select(selectAllSuits);
-  readonly properties$ = this.store.select(selectAllPropertyEntities);
+  readonly properties$ = this.store.select(selectAllProperties);
 
   constructor(private store: Store) { }
 

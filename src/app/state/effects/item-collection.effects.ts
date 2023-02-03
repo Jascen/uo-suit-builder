@@ -45,7 +45,7 @@ export class ItemCollectionEffects {
     buildSuit$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(itemCollectionActions.UserActions.build),
-            concatLatestFrom(() => [this.store.select(fromSuitConfig.selectAllPropertyEntities), this.store.select(fromItemCollection.selectItemCollectionEntities)]),
+            concatLatestFrom(() => [this.store.select(fromSuitConfig.selectAllProperties), this.store.select(fromItemCollection.selectItemCollectionEntities)]),
 
             map(([action, suitConfigOptions, itemEntities]) => {
                 const itemsByType = action.itemIds.reduce((acc, itemId) => {

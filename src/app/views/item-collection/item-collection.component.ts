@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectAllItems } from 'src/app/state/selectors/item-collection.selectors';
-import { selectAllPropertyEntities } from 'src/app/state/selectors/suit-config.selectors';
+import { selectAllProperties } from 'src/app/state/selectors/suit-config.selectors';
 import * as itemCollectionActions from '../../state/actions/item-collection.actions'
 import { ItemCollectionGridComponent } from './item-collection-grid/item-collection-grid.component';
 
@@ -18,7 +18,7 @@ export class ItemCollectionComponent {
   @ViewChild(ItemCollectionGridComponent, { static: true }) gridComponent!: ItemCollectionGridComponent;
 
   readonly items$ = this.store.select(selectAllItems);
-  readonly properties$ = this.store.select(selectAllPropertyEntities);
+  readonly properties$ = this.store.select(selectAllProperties);
 
   onFileSelected(event: any) {
     const files: FileList = event?.target?.files;
