@@ -1,0 +1,16 @@
+<form [formGroup]="form">
+    <div class="flex-row" style="overflow: auto;">
+        <mat-selection-list [multiple]="false" (selectionChange)="onPropertySelected($event)">
+            <mat-list-option *ngFor="let property of properties" [value]="property"
+                [selected]="selectedProperty?.id === property.id">{{property.name}}</mat-list-option>
+        </mat-selection-list>
+
+        <app-property-configuration-control *ngIf="selectedProperty"
+            [formControl]="$any(form.get(selectedProperty.id))"></app-property-configuration-control>
+    </div>
+
+    <div class="form-actions">
+        <button type="button" mat-flat-button (click)="reset()" [disabled]="!form.dirty">Reset</button>
+        <button type="button" mat-raised-button color="primary" (click)="save()" [disabled]="!form.dirty">Save</button>
+    </div>
+</form>

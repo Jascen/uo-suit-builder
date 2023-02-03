@@ -1,0 +1,28 @@
+app-property-configuration-form {
+    display: flex;
+    overflow: hidden;
+
+    form {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        max-width: 50rem;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1.25rem;
+    }
+
+
+    mat-selection-list {
+        width: 25rem;
+        overflow: auto;
+    }
+
+    app-property-configuration-control {
+        flex: 1;
+        padding: 2rem;
+    }
+}

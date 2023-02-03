@@ -20,6 +20,15 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
 import { SuitCollectionComponent } from './views/suit-collection/suit-collection.component';
 import { SuitCollectionGridComponent } from './views/suit-collection/suit-collection-grid/suit-collection-grid.component';
 import { SidenavComponent } from './views/sidenav/sidenav.component';
+import { PropertyConfigurationComponent } from './views/property-configuration/property-configuration.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { PropertyConfigurationFormComponent } from './views/property-configuration/property-configuration-form/property-configuration-form.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatListModule } from '@angular/material/list';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { PropertyConfigurationControlComponent } from './views/property-configuration/property-configuration-control/property-configuration-control.component';
+
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule
@@ -34,12 +43,16 @@ ModuleRegistry.registerModules([
     ItemCollectionGridComponent,
     SuitCollectionComponent,
     SuitCollectionGridComponent,
-    SidenavComponent
+    SidenavComponent,
+    PropertyConfigurationComponent,
+    PropertyConfigurationFormComponent,
+    PropertyConfigurationControlComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    ReactiveFormsModule,
     StoreModule.forRoot({}, {}),
     EffectsModule.forRoot(effects),
     StoreModule.forRoot(reducers, { metaReducers }),
@@ -47,6 +60,10 @@ ModuleRegistry.registerModules([
     AgGridModule,
     MatIconModule,
     MatButtonModule,
+    MatInputModule,
+    MatSliderModule,
+    MatListModule,
+    MatFormFieldModule
   ],
   providers: [],
   bootstrap: [AppComponent]

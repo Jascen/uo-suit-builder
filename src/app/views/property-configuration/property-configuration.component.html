@@ -1,0 +1,4 @@
+<h4>Application properties</h4>
+
+<app-property-configuration-form [properties]="properties$ | async" [selectedProperty]="selectedProperty$ | async"
+    (propertySelected)="onPropertySelected($event)" (saveRequested)="onSaveRequested($event)"></app-property-configuration-form>

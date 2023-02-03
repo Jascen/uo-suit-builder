@@ -6,6 +6,7 @@ import * as fromActions from '../actions/suit-config.actions';
 
 export interface SuitConfigState {
     propertyOptions: EntityState<StatConfiguration>;
+    activeStatConfigurationId?: string;
 }
 
 export const itemAdapter: EntityAdapter<StatConfiguration> = createEntityAdapter<StatConfiguration>({
@@ -18,12 +19,30 @@ export const initialState = {
 
 export const reducer = createReducer(
     initialState,
+    on(fromActions.Actions.initialize, (state): SuitConfigState => {
+        return {
+            ...state,
+            activeStatConfigurationId: null
+        }
+    }),
     on(fromActions.Actions.initializeSuccess, (state, { configurationOptions }): SuitConfigState => {
         return {
             ...state,
             propertyOptions: itemAdapter.setAll(configurationOptions, state.propertyOptions)
         }
-    })
+    }),
+    on(fromActions.UserActions.selectProperty, (state, { propertyId }): SuitConfigState => {
+        return {
+            ...state,
+            activeStatConfigurationId: propertyId
+        }
+    }),
+    on(fromActions.UserActions.saveSettings, (state, { properties }): SuitConfigState => {
+        return {
+            ...state,
+            propertyOptions: itemAdapter.setMany(properties, state.propertyOptions)
+        }
+    }),
 );
 
 export const {

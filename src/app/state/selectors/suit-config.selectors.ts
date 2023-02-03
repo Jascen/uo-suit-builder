@@ -17,3 +17,14 @@ export const selectAllProperties = createSelector(
     fromFeature.selectSuitConfigState,
     state => selectAll(state.propertyOptions)
 );
+
+export const selectAllPropertiesSorted = createSelector(
+    selectAllProperties,
+    properties => [...properties].sort((a, b) => a.name.localeCompare(b.name))
+);
+
+export const selectActiveProperty = createSelector(
+    fromFeature.selectSuitConfigState,
+    selectAllPropertyEntities,
+    (state, entities) => state.activeStatConfigurationId ? entities[state.activeStatConfigurationId] : null
+);

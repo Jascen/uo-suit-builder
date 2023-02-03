@@ -1,0 +1,28 @@
+<ng-container [formGroup]="form">
+    <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" placeholder="Name*">
+        <mat-error>Name is required</mat-error>
+    </mat-form-field>
+
+    <div class="mat-mdc-form-field">
+        <mat-label>Scale Factor</mat-label>
+        <mat-slider showTickMarks min="0" max="2.0" step="0.1" discrete>
+            <input matSliderThumb formControlName="scalingFactor">
+        </mat-slider>
+    </div>
+
+    <div class="mat-mdc-form-field">
+        <mat-label>Target Range</mat-label>
+        <mat-slider min="0" max="125" step="5" discrete>
+            <input matSliderStartThumb formControlName="minimum">
+            <input matSliderEndThumb formControlName="target">
+        </mat-slider>
+    </div>
+
+    <mat-form-field>
+        <mat-label>Maximum Value</mat-label>
+        <input matInput type="number" min="0" max="125" formControlName="maximum">
+        <mat-error>Maximum value must be less than or equal to 125.</mat-error>
+    </mat-form-field>
+</ng-container>

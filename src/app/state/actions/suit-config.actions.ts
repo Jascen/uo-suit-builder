@@ -8,3 +8,11 @@ export const Actions = createActionGroup({
         'Initialize Success': props<{ configurationOptions: StatConfiguration[] }>(),
     }
 });
+
+export const UserActions = createActionGroup({
+    source: 'Suit Config - User',
+    events: {
+        'Select Property': props<{ propertyId: string }>(),
+        'Save Settings': props<{ properties: StatConfiguration[] }>(),
+    }
+});
