@@ -127,7 +127,6 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
         this._gridApi.setColumnDefs(columnDefinitions);
 
         const rowData = this.rowData || [];
-        console.log(rowData);
         this._gridApi.setRowData(rowData);
       }),
       takeUntil(this._destroyed$)
