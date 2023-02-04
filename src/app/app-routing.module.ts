@@ -5,10 +5,10 @@ import { PropertyConfigurationComponent } from './views/property-configuration/p
 import { SuitCollectionComponent } from './views/suit-collection/suit-collection.component';
 
 const routes: Routes = [
-  { path: 'items', component: ItemCollectionComponent, },
-  { path: 'suits', component: SuitCollectionComponent, },
+  { path: 'builder', component: ItemCollectionComponent, },
+  { path: 'review', component: SuitCollectionComponent, },
   { path: 'settings', component: PropertyConfigurationComponent, },
-  { path: '**', redirectTo: 'items', pathMatch: 'full' }
+  { path: '**', redirectTo: 'builder', pathMatch: 'full' }
 ];
 
 @NgModule({
