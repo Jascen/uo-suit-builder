@@ -6,6 +6,7 @@ import { StatConfiguration } from 'src/app/state/models/suit-config.models';
 
 interface PropertyForm {
   name: FormControl<string>;
+  shortName: FormControl<string>;
   scalingFactor: FormControl<number>;
   minimum: FormControl<number>;
   target: FormControl<number>;
@@ -50,6 +51,7 @@ export class PropertyConfigurationControlComponent implements OnInit, OnDestroy,
   writeValue(property: StatConfiguration): void {
     this.form.setValue({
       name: property.name,
+      shortName: property.shortName,
       maximum: property.maximum,
       minimum: property.minimum,
       scalingFactor: property.scalingFactor,
@@ -68,6 +70,7 @@ export class PropertyConfigurationControlComponent implements OnInit, OnDestroy,
   constructor(formBuilder: FormBuilder) {
     this.form = formBuilder.group({
       name: ['', Validators.required],
+      shortName: [''],
       scalingFactor: [null],
       minimum: [null],
       target: [null],

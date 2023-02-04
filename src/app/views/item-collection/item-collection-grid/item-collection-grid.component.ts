@@ -6,6 +6,7 @@ import { Item } from 'src/app/state/models/item-collection.models';
 
 export interface ItemProperty {
   id: string;
+  shortName: string;
   name: string;
 }
 
@@ -44,9 +45,9 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
 
   private createColumns(itemProperties: ItemProperty[]) {
     const defaultColDef = {
-      suppressMovable: true,
       sortable: true,
       resizable: true,
+      width: 130,
 
       floatingFilter: true,
       filter: GridFilterModule.Text,
@@ -61,6 +62,7 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
       {
         field: 'name',
         headerName: 'Name',
+        width: 200,
         checkboxSelection: true,
         headerCheckboxSelection: true,
         headerCheckboxSelectionFilteredOnly: true,
@@ -76,7 +78,7 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
     itemProperties.forEach(property => {
       columnDefinitions.push({
         field: property.id,
-        headerName: property.name,
+        headerName: property.shortName ?? property.name,
         filter: GridFilterModule.Number,
         valueGetter: params => params.data?.properties[property.id]
       } as PageColDef);
