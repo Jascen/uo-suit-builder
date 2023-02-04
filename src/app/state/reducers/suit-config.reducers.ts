@@ -25,12 +25,16 @@ export const reducer = createReducer(
             activeStatConfigurationId: null
         }
     }),
-    on(fromActions.Actions.initializeSuccess, (state, { configurationOptions }): SuitConfigState => {
-        return {
-            ...state,
-            propertyOptions: itemAdapter.setAll(configurationOptions, state.propertyOptions)
+    on(
+        fromActions.Actions.initializeSuccess,
+        fromActions.UserActions.importProperties,
+        (state, { properties }): SuitConfigState => {
+            return {
+                ...state,
+                propertyOptions: itemAdapter.setAll(properties, state.propertyOptions)
+            }
         }
-    }),
+    ),
     on(fromActions.UserActions.selectProperty, (state, { propertyId }): SuitConfigState => {
         return {
             ...state,

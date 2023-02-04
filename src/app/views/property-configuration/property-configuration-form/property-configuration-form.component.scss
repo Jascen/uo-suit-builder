@@ -13,8 +13,11 @@ app-property-configuration-form {
         display: flex;
         justify-content: space-between;
         margin-top: 1.25rem;
-    }
 
+        button + button {
+            margin-left: 1rem;
+        }
+    }
 
     mat-selection-list {
         width: 25rem;

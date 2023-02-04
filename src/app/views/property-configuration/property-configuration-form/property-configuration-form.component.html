@@ -1,4 +1,13 @@
 <form [formGroup]="form">
+    <div class="form-actions">
+        <button type="button" mat-flat-button style="margin-right: auto;" (click)="reset()" [disabled]="!form.dirty">Reset</button>
+        
+        <button mat-flat-button (click)="onExportClicked()" color="basic" [disabled]="form.dirty">Export</button>
+        <button mat-flat-button (click)="fileInput.click()" color="basic" [disabled]="form.dirty">Import</button>
+        <button type="button" mat-raised-button color="primary" (click)="save()" [disabled]="!form.dirty || !form.valid">Save</button>
+        <input hidden (change)="onFileSelected($event)" #fileInput type="file">
+    </div>
+    
     <div class="flex-row" style="overflow: auto;">
         <mat-selection-list [multiple]="false" (selectionChange)="onPropertySelected($event)">
             <mat-list-option *ngFor="let property of properties" [value]="property"
@@ -7,10 +16,5 @@
 
         <app-property-configuration-control *ngIf="selectedProperty"
             [formControl]="$any(form.get(selectedProperty.id))"></app-property-configuration-control>
-    </div>
-
-    <div class="form-actions">
-        <button type="button" mat-flat-button (click)="reset()" [disabled]="!form.dirty">Reset</button>
-        <button type="button" mat-raised-button color="primary" (click)="save()" [disabled]="!form.dirty || !form.valid">Save</button>
     </div>
 </form>

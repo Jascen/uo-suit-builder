@@ -5,6 +5,7 @@ import { filter, map } from "rxjs";
 import { StatConfiguration } from "../models/suit-config.models";
 import * as suitConfigActions from '../actions/suit-config.actions';
 import * as fromSuitConfig from '../selectors/suit-config.selectors';
+import * as FileSaver from "file-saver";
 
 
 @Injectable()
@@ -18,131 +19,161 @@ export class SuitConfigEffects {
 
             map(() => {
                 // TODO: Make configurable
-                const configurationOptions = [
+                const properties = [
                     // Resistances
                     {
                         id: "phys_res",
                         name: "Physical Resist",
                         minimum: 60,
                         target: 70,
-                        maximum: 70,
-                        scalingFactor: 1.0
-                    },
-                    {
+                        maximum: 75,
+                        scalingFactor: 1
+                      },
+                      {
                         id: "fire_res",
                         name: "Fire Resist",
-                        minimum: 85,
-                        target: 95,
-                        maximum: 110,
-                        scalingFactor: 1.0
-                    },
-                    {
+                        minimum: 60,
+                        target: 70,
+                        maximum: 75,
+                        scalingFactor: 1.5
+                      },
+                      {
                         id: "cold_res",
                         name: "Cold Resist",
                         minimum: 60,
                         target: 70,
-                        maximum: 70,
-                        scalingFactor: 1.0
-                    },
-                    {
+                        maximum: 75,
+                        scalingFactor: 1
+                      },
+                      {
                         id: "poison_res",
                         name: "Poison Resist",
-                        minimum: 40,
-                        target: 70,
-                        maximum: 70,
-                        scalingFactor: 1.0
-                    },
-                    {
+                        minimum: 50,
+                        target: 60,
+                        maximum: 75,
+                        scalingFactor: 1
+                      },
+                      {
                         id: "energy_res",
                         name: "Energy Resist",
                         minimum: 60,
                         target: 70,
-                        maximum: 70,
-                        scalingFactor: 1.0
-                    },
-
-                    // Anyone
-                    {
+                        maximum: 75,
+                        scalingFactor: 1.5
+                      },
+                      {
                         id: "lmc",
                         name: "Lower Mana Cost",
-                        minimum: 10,
+                        minimum: 20,
                         target: 40,
                         maximum: 40,
-                        scalingFactor: 1.5
-                    },
-                    {
+                        scalingFactor: 2
+                      },
+                      {
                         id: "hp_inc",
                         name: "Hit Points Increase",
                         minimum: 0,
-                        target: 20,
+                        target: 40,
                         maximum: 40,
-                        scalingFactor: 1.1
-                    },
-                    {
+                        scalingFactor: 1.2
+                      },
+                      {
+                        id: "str",
+                        name: "Strength",
+                        minimum: 0,
+                        target: 0,
+                        maximum: 0,
+                        scalingFactor: 1
+                      },
+                      {
                         id: "mana_inc",
                         name: "Mana Increase",
                         minimum: 0,
-                        target: 20,
-                        maximum: 40,
-                        scalingFactor: 1.1
-                    },
-                    {
+                        target: 0,
+                        maximum: 0,
+                        scalingFactor: 1
+                      },
+                      {
+                        id: "int",
+                        name: "Intelligence",
+                        minimum: 0,
+                        target: 0,
+                        maximum: 0,
+                        scalingFactor: 1
+                      },
+                      {
                         id: "dci",
                         name: "Defense Chance Increase",
                         minimum: 0,
-                        target: 20,
+                        target: 0,
                         maximum: 45,
-                        scalingFactor: 1.5
-                    },
-
-                    // str, dex, int
-
-                    // Caster
-                    {
+                        scalingFactor: 1
+                      },
+                      {
                         id: "lrc",
                         name: "Lower Reagent Cost",
                         minimum: 0,
                         target: 0,
                         maximum: 0,
                         scalingFactor: 1.0
-                    },
-                    {
+                      },
+                      {
                         id: "mana_regen",
                         name: "Mana Regen",
                         minimum: 0,
-                        target: 5,
+                        target: 10,
                         maximum: 20,
-                        scalingFactor: 1.0
-                    },
-
-                    // Dexxer
-                    {
+                        scalingFactor: 1.5
+                      },
+                      {
                         id: "stam_inc",
                         name: "Stamina Increase",
                         minimum: 0,
-                        target: 20,
-                        maximum: 40,
-                        scalingFactor: 1.25
-                    },
-                    {
+                        target: 0,
+                        maximum: 0,
+                        scalingFactor: 1
+                      },
+                      {
+                        id: "dex",
+                        name: "Dexterity",
+                        minimum: 0,
+                        target: 0,
+                        maximum: 0,
+                        scalingFactor: 1
+                      },
+                      {
                         id: "dmg_inc",
                         name: "Damage Increase",
-                        minimum: 0, // 30
-                        target: 65,
-                        maximum: 65,
-                        scalingFactor: 1.2
-                    },
-                    {
+                        minimum: 0,
+                        target: 0,
+                        maximum: 0,
+                        scalingFactor: 1
+                      },
+                      {
                         id: "hci",
                         name: "Hit Chance Increase",
                         minimum: 0,
-                        target: 20,
-                        maximum: 45,
-                        scalingFactor: 1.5
-                    },
+                        target: 0,
+                        maximum: 0,
+                        scalingFactor: 1
+                      }
                 ] as StatConfiguration[];
 
-                return suitConfigActions.Actions.initializeSuccess({ configurationOptions });
+                return suitConfigActions.Actions.initializeSuccess({ properties });
+            })
+        )
+    });
+
+    exportProperties$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(suitConfigActions.UserActions.exportSettings),
+            concatLatestFrom(() => this.store.select(fromSuitConfig.selectAllProperties)),
+
+            map(([action, properties]) => {
+                const file = new File([JSON.stringify(properties, null, '\t')], "uo-suit-builder--properties.json", { type: "application/json;charset=utf-8" });
+                FileSaver.saveAs(file);
+
+                return suitConfigActions.Actions.initializeSuccess({ properties });
             })
         )
     });
