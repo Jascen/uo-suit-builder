@@ -3,9 +3,17 @@ app-suit-collection {
     display: flex;
     flex-direction: column;
     margin: 1rem;
+    overflow: auto;
 
     app-suit-collection-grid {
         flex: 1;
+    }
+
+    .content-container {
+        display: flex;
+        flex-direction: row;
+        flex: 1;
+        overflow: auto;
     }
 
     .suit-summary {
@@ -13,9 +21,12 @@ app-suit-collection {
         flex-direction: column;
         width: 300px;
         margin-left: 1rem;
+        overflow: auto;
 
         app-item-detail-list {
             margin-top: 1rem;
+            flex: 1;
+            overflow: auto;
         }
     }
 

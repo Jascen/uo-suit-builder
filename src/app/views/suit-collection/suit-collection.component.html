@@ -5,7 +5,7 @@
     </div>
 </div>
 
-<div class="flex-row flex-container">
+<div class="content-container">
     <app-suit-collection-grid [properties]="properties$ | async" [rowData]="suits$ | async" [loading]="false"
         (suitSelected)="onSuitSelected($event)"></app-suit-collection-grid>
 
