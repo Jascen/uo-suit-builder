@@ -24,6 +24,7 @@ export class SuitConfigEffects {
                     {
                         id: "phys_res",
                         name: "Physical Resist",
+                        shortName: "Phys",
                         minimum: 60,
                         target: 70,
                         maximum: 75,
@@ -32,6 +33,7 @@ export class SuitConfigEffects {
                       {
                         id: "fire_res",
                         name: "Fire Resist",
+                        shortName: "Fire",
                         minimum: 60,
                         target: 70,
                         maximum: 75,
@@ -40,6 +42,7 @@ export class SuitConfigEffects {
                       {
                         id: "cold_res",
                         name: "Cold Resist",
+                        shortName: "Cold",
                         minimum: 60,
                         target: 70,
                         maximum: 75,
@@ -48,6 +51,7 @@ export class SuitConfigEffects {
                       {
                         id: "poison_res",
                         name: "Poison Resist",
+                        shortName: "Psn",
                         minimum: 50,
                         target: 60,
                         maximum: 75,
@@ -56,6 +60,7 @@ export class SuitConfigEffects {
                       {
                         id: "energy_res",
                         name: "Energy Resist",
+                        shortName: "Energy",
                         minimum: 60,
                         target: 70,
                         maximum: 75,
@@ -64,6 +69,7 @@ export class SuitConfigEffects {
                       {
                         id: "lmc",
                         name: "Lower Mana Cost",
+                        shortName: "LMC",
                         minimum: 20,
                         target: 40,
                         maximum: 40,
@@ -72,6 +78,7 @@ export class SuitConfigEffects {
                       {
                         id: "hp_inc",
                         name: "Hit Points Increase",
+                        shortName: "HPI",
                         minimum: 0,
                         target: 40,
                         maximum: 40,
@@ -80,6 +87,7 @@ export class SuitConfigEffects {
                       {
                         id: "str",
                         name: "Strength",
+                        shortName: "Str",
                         minimum: 0,
                         target: 0,
                         maximum: 0,
@@ -88,6 +96,7 @@ export class SuitConfigEffects {
                       {
                         id: "mana_inc",
                         name: "Mana Increase",
+                        shortName: "Mana",
                         minimum: 0,
                         target: 0,
                         maximum: 0,
@@ -96,6 +105,7 @@ export class SuitConfigEffects {
                       {
                         id: "int",
                         name: "Intelligence",
+                        shortName: "Int",
                         minimum: 0,
                         target: 0,
                         maximum: 0,
@@ -104,6 +114,7 @@ export class SuitConfigEffects {
                       {
                         id: "dci",
                         name: "Defense Chance Increase",
+                        shortName: "DCI",
                         minimum: 0,
                         target: 0,
                         maximum: 45,
@@ -112,6 +123,7 @@ export class SuitConfigEffects {
                       {
                         id: "lrc",
                         name: "Lower Reagent Cost",
+                        shortName: "LRC",
                         minimum: 0,
                         target: 0,
                         maximum: 0,
@@ -120,6 +132,7 @@ export class SuitConfigEffects {
                       {
                         id: "mana_regen",
                         name: "Mana Regen",
+                        shortName: "MR",
                         minimum: 0,
                         target: 10,
                         maximum: 20,
@@ -128,6 +141,7 @@ export class SuitConfigEffects {
                       {
                         id: "stam_inc",
                         name: "Stamina Increase",
+                        shortName: "Stam",
                         minimum: 0,
                         target: 0,
                         maximum: 0,
@@ -136,6 +150,7 @@ export class SuitConfigEffects {
                       {
                         id: "dex",
                         name: "Dexterity",
+                        shortName: "Dex",
                         minimum: 0,
                         target: 0,
                         maximum: 0,
@@ -144,6 +159,7 @@ export class SuitConfigEffects {
                       {
                         id: "dmg_inc",
                         name: "Damage Increase",
+                        shortName: "DI",
                         minimum: 0,
                         target: 0,
                         maximum: 0,
@@ -152,6 +168,7 @@ export class SuitConfigEffects {
                       {
                         id: "hci",
                         name: "Hit Chance Increase",
+                        shortName: "HCI",
                         minimum: 0,
                         target: 0,
                         maximum: 0,

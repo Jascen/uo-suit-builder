@@ -6,6 +6,7 @@ import { Suit } from 'src/app/state/models/suit-collection.models';
 
 export interface ItemProperty {
   id: string;
+  shortName: string;
   name: string;
 }
 
@@ -40,7 +41,6 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
 
   private createColumns(itemProperties: ItemProperty[]) {
     const defaultColDef = {
-      suppressMovable: true,
       sortable: true,
       resizable: true,
 
@@ -56,7 +56,7 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
     itemProperties.forEach(property => {
       columnDefinitions.push({
         field: property.id,
-        headerName: property.name,
+        headerName: property.shortName ?? property.name,
         filter: GridFilterModule.Number,
         valueGetter: params => params.data?.summary ? params.data.summary[property.id] : null
       } as PageColDef);
