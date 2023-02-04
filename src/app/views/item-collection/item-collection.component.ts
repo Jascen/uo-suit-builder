@@ -2,8 +2,9 @@ import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, ViewEncapsul
 import { Store } from '@ngrx/store';
 import { selectAllItems } from 'src/app/state/selectors/item-collection.selectors';
 import { selectAllProperties } from 'src/app/state/selectors/suit-config.selectors';
-import * as itemCollectionActions from '../../state/actions/item-collection.actions'
 import { ItemCollectionGridComponent } from './item-collection-grid/item-collection-grid.component';
+import { Papa } from 'ngx-papaparse';
+import * as itemCollectionActions from '../../state/actions/item-collection.actions'
 
 
 @Component({
@@ -37,6 +38,16 @@ export class ItemCollectionComponent {
           case 'json':
             this.store.dispatch(itemCollectionActions.UserActions.import({ items: JSON.parse(text) }))
             break;
+
+          case 'csv':
+            this.papa.parse(text, {
+              header: true,
+              dynamicTyping: true,
+              complete: (results) => {
+                this.store.dispatch(itemCollectionActions.UserActions.import({ items: results.data }))
+              }
+            });
+            break;
         }
       } finally {
         if (this.fileInput?.nativeElement) {
@@ -53,6 +64,9 @@ export class ItemCollectionComponent {
     this.store.dispatch(itemCollectionActions.UserActions.build({ itemIds: selectedItemIds }));
   }
 
-  constructor(private store: Store) { }
+  constructor(
+    private store: Store,
+    private papa: Papa
+  ) { }
 
 }
