@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Item, ItemSlot } from '../state/models/item-collection.models';
-import { Suit, SuitScoringOptions } from '../state/models/suit-builder.models';
+import { SuitScoringOptions } from '../state/models/suit-builder.models';
+import { Suit } from 'src/app/state/models/suit-collection.models';
 import { StatConfiguration } from '../state/models/suit-config.models';
 import { copyObjectKeys } from '../utilities/object.utilities';
 

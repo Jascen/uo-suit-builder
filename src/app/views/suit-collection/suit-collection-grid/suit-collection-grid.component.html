@@ -1,7 +1,9 @@
 <ag-grid-angular
   class="ag-theme-alpine-dark"
   [headerHeight]="38"
-  rowSelection="multiple"
+  rowSelection="single"
   [animateRows]="true"
+  [getRowId]="getRowId"
   overlayNoRowsTemplate="No suits available"
-  (gridReady)="onGridReady($event)"></ag-grid-angular>
+  (gridReady)="onGridReady($event)"
+  (rowSelected)="onRowSelected($event)"></ag-grid-angular>

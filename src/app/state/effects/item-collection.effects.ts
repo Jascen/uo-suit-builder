@@ -60,6 +60,7 @@ export class ItemCollectionEffects {
 
                 const suit = this.suitBuilderService.createSuitIncrementally(itemsByType, suitConfigOptions);
                 const suitVariations = this.suitBuilderService.createSuitVariations(suit, itemsByType, suitConfigOptions);
+                suitVariations.forEach((suit, index) => (suit.id = index.toString()));
 
                 return suitBuilderActions.UserActions.buildSuccess({ suits: suitVariations });
             })

@@ -5,5 +5,9 @@
     </div>
 </div>
 
-<app-suit-collection-grid [properties]="properties$ | async" [rowData]="suits$ | async"
-    [loading]="false"></app-suit-collection-grid>
+<div class="flex-row flex-container">
+    <app-suit-collection-grid [properties]="properties$ | async" [rowData]="suits$ | async" [loading]="false"
+        (suitSelected)="onSuitSelected($event)"></app-suit-collection-grid>
+
+    <app-item-detail-list *ngIf="selectedSuitSummary$ | async as suitSummary" [properties]="properties$ | async" [dataSource]="suitSummary"></app-item-detail-list>
+</div>

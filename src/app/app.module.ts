@@ -28,6 +28,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatListModule } from '@angular/material/list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PropertyConfigurationControlComponent } from './views/property-configuration/property-configuration-control/property-configuration-control.component';
+import { ItemDetailListComponent } from './components/item-detail-list/item-detail-list.component';
 
 
 ModuleRegistry.registerModules([
@@ -47,6 +48,7 @@ ModuleRegistry.registerModules([
     PropertyConfigurationComponent,
     PropertyConfigurationFormComponent,
     PropertyConfigurationControlComponent,
+    ItemDetailListComponent,
   ],
   imports: [
     BrowserModule,

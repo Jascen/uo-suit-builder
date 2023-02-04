@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { Suit } from "../models/suit-builder.models";
+import { Suit } from 'src/app/state/models/suit-collection.models';
 import * as suitBuilderActions from '../actions/suit-builder.actions';
 
 

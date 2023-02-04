@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { ColDef, GridApi, GridReadyEvent, RowSelectedEvent } from 'ag-grid-community';
 import { Subject, BehaviorSubject, filter, startWith, switchMap, takeUntil, tap } from 'rxjs';
-import { Item } from 'src/app/state/models/item-collection.models';
-import { Suit } from 'src/app/state/models/suit-builder.models';
+import { Suit } from 'src/app/state/models/suit-collection.models';
 
 
 export interface ItemProperty {
@@ -31,6 +30,8 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
   @Input() properties!: ItemProperty[];
   @Input() rowData!: Suit[];
   @Input() loading: boolean = true;
+
+  @Output() suitSelected = new EventEmitter<string>();
 
   private _gridApi!: GridApi;
   private readonly _destroyed$ = new Subject();
@@ -67,6 +68,8 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
     };
   }
 
+  getRowId = (params: { data: Suit }) => params.data.id;
+
   getSelected(): number[] {
     const selectedNodes = this._gridApi?.getSelectedNodes();
     if (!selectedNodes?.length) { return []; }
@@ -77,6 +80,10 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
   onGridReady(params: GridReadyEvent) {
     this._gridApi = params.api;
     this._gridLoaded$.next(true);
+  }
+
+  onRowSelected(event: RowSelectedEvent<Suit>) {
+    this.suitSelected.emit(event.data.id);
   }
 
   constructor() { }
