@@ -8,8 +8,15 @@ app-suit-collection {
         flex: 1;
     }
 
-    app-item-detail-list {
+    .suit-summary {
+        display: flex;
+        flex-direction: column;
         width: 300px;
+        margin-left: 1rem;
+
+        app-item-detail-list {
+            margin-top: 1rem;
+        }
     }
 
     .page-header {

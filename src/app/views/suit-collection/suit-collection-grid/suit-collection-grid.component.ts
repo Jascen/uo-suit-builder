@@ -43,6 +43,7 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
     const defaultColDef = {
       sortable: true,
       resizable: true,
+      width: 130,
 
       floatingFilter: true,
       filterParams: {

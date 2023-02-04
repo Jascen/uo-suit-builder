@@ -23,8 +23,3 @@ export const selectActiveSuit = createSelector(
     selectAllSuitEntities,
     (state, entities) => state.activeSuitId ? entities[state.activeSuitId] : null
 );
-
-export const selectActiveSuitSummary = createSelector(
-    selectActiveSuit,
-    suit => suit?.summary
-);

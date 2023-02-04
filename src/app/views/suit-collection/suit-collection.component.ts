@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { selectAllPropertiesSorted } from 'src/app/state/selectors/suit-config.selectors';
+import { selectAllProperties, selectAllPropertiesSorted } from 'src/app/state/selectors/suit-config.selectors';
 import { SuitCollectionGridComponent } from './suit-collection-grid/suit-collection-grid.component';
-import { selectActiveSuitSummary, selectAllSuits } from 'src/app/state/selectors/suit-collection.selectors';
+import { selectActiveSuit, selectAllSuits } from 'src/app/state/selectors/suit-collection.selectors';
 import * as suitCollectionActions from '../../state/actions/suit-collection.actions';
 
 
@@ -17,8 +17,9 @@ export class SuitCollectionComponent {
   @ViewChild(SuitCollectionGridComponent, { static: true }) gridComponent!: SuitCollectionGridComponent;
 
   readonly suits$ = this.store.select(selectAllSuits);
-  readonly selectedSuitSummary$ = this.store.select(selectActiveSuitSummary);
-  readonly properties$ = this.store.select(selectAllPropertiesSorted);
+  readonly selectedSuit$ = this.store.select(selectActiveSuit);
+  readonly properties$ = this.store.select(selectAllProperties);
+  readonly sortedProperties$ = this.store.select(selectAllPropertiesSorted);
 
   onSuitSelected(suitId: string) {
     this.store.dispatch(suitCollectionActions.UserActions.selectSuit({ suitId }));

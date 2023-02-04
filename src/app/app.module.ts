@@ -30,6 +30,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { PropertyConfigurationControlComponent } from './views/property-configuration/property-configuration-control/property-configuration-control.component';
 import { ItemDetailListComponent } from './components/item-detail-list/item-detail-list.component';
 import { NgLetDirective } from './directives/ng-let.directive';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 ModuleRegistry.registerModules([
@@ -67,7 +68,8 @@ ModuleRegistry.registerModules([
     MatInputModule,
     MatSliderModule,
     MatListModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]
