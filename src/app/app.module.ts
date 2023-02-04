@@ -29,6 +29,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PropertyConfigurationControlComponent } from './views/property-configuration/property-configuration-control/property-configuration-control.component';
 import { ItemDetailListComponent } from './components/item-detail-list/item-detail-list.component';
+import { NgLetDirective } from './directives/ng-let.directive';
 
 
 ModuleRegistry.registerModules([
@@ -38,6 +39,7 @@ ModuleRegistry.registerModules([
 @NgModule({
   declarations: [
     AppComponent,
+    NgLetDirective,
     ItemCollectionComponent,
     SuitBuilderComponent,
     SuitConfigComponent,
