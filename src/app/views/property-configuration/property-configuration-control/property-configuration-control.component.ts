@@ -77,8 +77,8 @@ export class PropertyConfigurationControlComponent implements OnInit, OnDestroy,
 
   validate(control: AbstractControl<any, any>): ValidationErrors {
     return Object.entries(this.form.controls).reduce((acc, [name, control]) => {
-      if (control.hasError) {
-        acc[name] = control;
+      if ((control as AbstractControl).errors) {
+        acc[name] = control.errors;
       }
 
       return acc;
