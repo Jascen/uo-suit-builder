@@ -12,7 +12,7 @@ export class SuitBuilderEffects {
     viewSuitsAfterBuild$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(suitBuilderActions.UserActions.buildSuccess),
-            tap(action => this.router.navigateByUrl('suits'))
+            tap(action => this.router.navigateByUrl('review'))
         )
     }, { dispatch: false });
 
