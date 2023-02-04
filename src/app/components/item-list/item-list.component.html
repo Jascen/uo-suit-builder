@@ -1,0 +1,8 @@
+<mat-expansion-panel *ngFor="let item of items">
+    <mat-expansion-panel-header>
+        <mat-panel-title>{{ item.slot }}</mat-panel-title>
+        <mat-panel-description>{{ item.name }}</mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <app-item-detail-list [properties]="properties" [dataSource]="item.properties"></app-item-detail-list>
+</mat-expansion-panel>

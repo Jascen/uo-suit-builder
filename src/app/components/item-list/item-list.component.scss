@@ -1,0 +1,10 @@
+app-item-list {
+    flex: 1;
+    margin-top: 1rem;
+    overflow: auto;
+
+    mat-panel-description {
+        direction: rtl;
+        justify-content: flex-start;
+    }
+}

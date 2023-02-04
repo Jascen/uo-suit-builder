@@ -31,6 +31,8 @@ import { PropertyConfigurationControlComponent } from './views/property-configur
 import { ItemDetailListComponent } from './components/item-detail-list/item-detail-list.component';
 import { NgLetDirective } from './directives/ng-let.directive';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ItemListComponent } from './components/item-list/item-list.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 
 ModuleRegistry.registerModules([
@@ -52,6 +54,7 @@ ModuleRegistry.registerModules([
     PropertyConfigurationFormComponent,
     PropertyConfigurationControlComponent,
     ItemDetailListComponent,
+    ItemListComponent,
   ],
   imports: [
     BrowserModule,
@@ -69,7 +72,8 @@ ModuleRegistry.registerModules([
     MatSliderModule,
     MatListModule,
     MatFormFieldModule,
-    MatDialogModule
+    MatDialogModule,
+    MatExpansionModule
   ],
   providers: [],
   bootstrap: [AppComponent]
