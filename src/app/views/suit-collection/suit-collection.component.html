@@ -11,9 +11,10 @@
         (suitSelected)="onSuitSelected($event)"></app-suit-collection-grid>
 
     <div class="suit-summary" *ngLet="selectedSuit$ | async as selectedSuit">
-        <button type="button" mat-raised-button color="primary" [disabled]="!selectedSuit" title="Not implemented">Show Items</button>
+        <ng-container *ngIf="selectedSuit">
+            <app-item-detail-list [properties]="properties$ | async" [dataSource]="selectedSuit.summary"></app-item-detail-list>
 
-        <app-item-detail-list *ngIf="selectedSuit" [properties]="properties$ | async"
-            [dataSource]="selectedSuit.summary"></app-item-detail-list>
+            <app-item-list [items]="selectedSuit.items" [properties]="properties$ | async"></app-item-list>
+        </ng-container>
     </div>
 </div>
