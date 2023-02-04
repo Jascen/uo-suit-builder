@@ -5,6 +5,7 @@ import { StatConfiguration } from 'src/app/state/models/suit-config.models';
 
 
 interface PropertyForm {
+  id: FormControl<string>;
   name: FormControl<string>;
   shortName: FormControl<string>;
   scalingFactor: FormControl<number>;
@@ -50,6 +51,7 @@ export class PropertyConfigurationControlComponent implements OnInit, OnDestroy,
 
   writeValue(property: StatConfiguration): void {
     this.form.setValue({
+      id: property.id,
       name: property.name,
       shortName: property.shortName,
       maximum: property.maximum,
@@ -69,6 +71,7 @@ export class PropertyConfigurationControlComponent implements OnInit, OnDestroy,
 
   constructor(formBuilder: FormBuilder) {
     this.form = formBuilder.group({
+      id: ['', Validators.required],
       name: ['', Validators.required],
       shortName: [''],
       scalingFactor: [null],
@@ -93,6 +96,8 @@ export class PropertyConfigurationControlComponent implements OnInit, OnDestroy,
   }
 
   ngOnInit(): void {
+    this.form.get('id').disable();
+
     this.form.valueChanges.pipe(
       tap(change => this.onChange(change as any)),
       takeUntil(this._destroyed$)

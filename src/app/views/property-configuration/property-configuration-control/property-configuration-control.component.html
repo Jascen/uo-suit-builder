@@ -1,7 +1,13 @@
 <ng-container [formGroup]="form">
     <mat-form-field>
+        <mat-label>Property Id</mat-label>
+        <input matInput formControlName="id" placeholder="Property Id" autocomplete="off">
+        <mat-error>Property Id is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
         <mat-label>Name</mat-label>
-        <input matInput formControlName="name" placeholder="Name*" autocomplete="off">
+        <input matInput formControlName="name" placeholder="Name" autocomplete="off">
         <mat-error>Name is required</mat-error>
     </mat-form-field>
 
