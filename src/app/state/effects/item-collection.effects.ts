@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { map } from "rxjs";
+import { filter, map } from "rxjs";
 import { Item, ItemSlot } from "../models/item-collection.models";
 import { SuitBuilderService } from "src/app/services/suit-builder.service";
 import * as fromItemCollection from '../selectors/item-collection.selectors';
@@ -45,6 +45,8 @@ export class ItemCollectionEffects {
     buildSuit$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(itemCollectionActions.UserActions.build),
+            filter(action => !!action.itemIds?.length),
+
             concatLatestFrom(() => [this.store.select(fromSuitConfig.selectAllProperties), this.store.select(fromItemCollection.selectItemCollectionEntities)]),
 
             map(([action, suitConfigOptions, itemEntities]) => {
