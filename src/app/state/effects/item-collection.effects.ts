@@ -10,6 +10,7 @@ import * as fromItemCollection from '../selectors/item-collection.selectors';
 import * as fromSuitConfig from '../selectors/suit-config.selectors';
 import * as suitBuilderActions from '../actions/suit-builder.actions';
 import * as itemCollectionActions from '../actions/item-collection.actions';
+import { Suit } from "../models/suit-collection.models";
 
 
 @Injectable()
@@ -82,9 +83,16 @@ export class ItemCollectionEffects {
 
                 const suit = this.suitBuilderService.createSuitIncrementally(itemsByType, suitConfigOptions);
                 const suitVariations = this.suitBuilderService.createSuitVariations(suit, itemsByType, suitConfigOptions);
-                suitVariations.forEach((suit, index) => (suit.id = index.toString()));
+                const uniqueSuits = suitVariations.reduce((acc, suit) => {
+                    suit.items.sort((a, b) => a.slot.localeCompare(b.slot));
+                    suit.id = suit.items.map(item => `${item.slot}_${item.id}`).join('__');
 
-                return suitBuilderActions.UserActions.buildSuccess({ suits: suitVariations });
+                    acc[suit.id] = suit;
+
+                    return acc;
+                }, {} as Record<string, Suit>);
+
+                return suitBuilderActions.UserActions.buildSuccess({ suits: Object.values(uniqueSuits).sort((a, b) => b.score - a.score) });
             })
         )
     });
