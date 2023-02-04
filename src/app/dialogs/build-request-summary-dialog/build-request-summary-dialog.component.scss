@@ -1,0 +1,12 @@
+app-build-request-summary-dialog {
+    .mat-mdc-dialog-actions {
+        .mat-mdc-button-base {
+            margin-right: auto;
+
+            &+.mat-mdc-button-base {
+                margin-left: 1rem;
+                margin-right: 0;
+            }
+        }
+    }
+}

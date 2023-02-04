@@ -33,6 +33,7 @@ import { NgLetDirective } from './directives/ng-let.directive';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ItemListComponent } from './components/item-list/item-list.component';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { BuildRequestSummaryDialogComponent } from './dialogs/build-request-summary-dialog/build-request-summary-dialog.component';
 
 
 ModuleRegistry.registerModules([
@@ -55,6 +56,7 @@ ModuleRegistry.registerModules([
     PropertyConfigurationControlComponent,
     ItemDetailListComponent,
     ItemListComponent,
+    BuildRequestSummaryDialogComponent,
   ],
   imports: [
     BrowserModule,

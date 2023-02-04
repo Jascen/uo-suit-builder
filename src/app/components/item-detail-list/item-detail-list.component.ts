@@ -11,6 +11,6 @@ import { StatConfiguration } from 'src/app/state/models/suit-config.models';
 export class ItemDetailListComponent {
 
   @Input() properties: StatConfiguration[];
-  @Input() dataSource: Record<string, number>;
+  @Input() dataSource: Record<string, number> | Record<string, string>;
 
 }

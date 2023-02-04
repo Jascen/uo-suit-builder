@@ -6,6 +6,7 @@ export const Actions = createActionGroup({
     events: {
         'Initialize': emptyProps(),
         'Initialize Success': props<{ properties: StatConfiguration[] }>(),
+        'Navigate To Settings': emptyProps(),
     }
 });
 

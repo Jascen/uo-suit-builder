@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Build Request</h1>
+
+<div mat-dialog-content *ngIf="pageState$ | async as pageState">
+    <app-item-detail-list [properties]="pageState.properties" [dataSource]="pageState.data"></app-item-detail-list>
+</div>
+
+<div mat-dialog-actions>
+    <button mat-flat-button [mat-dialog-close]="false">Cancel</button>
+
+    <button mat-flat-button (click)="onChangeSettings()">Change Settings</button>
+    <button mat-raised-button [mat-dialog-close]="true" cdkFocusInitial color="primary">Build</button>
+</div>
