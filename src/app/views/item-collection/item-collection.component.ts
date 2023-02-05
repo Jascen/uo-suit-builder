@@ -15,10 +15,11 @@ import * as itemCollectionActions from '../../state/actions/item-collection.acti
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemCollectionComponent {
-  @ViewChild('fileInput', { static: true }) fileInput!: ElementRef<HTMLInputElement>;
-  @ViewChild(ItemCollectionGridComponent, { static: true }) gridComponent!: ItemCollectionGridComponent;
+  @ViewChild('fileInput', { static: false }) fileInput!: ElementRef<HTMLInputElement>;
+  @ViewChild(ItemCollectionGridComponent, { static: false }) gridComponent!: ItemCollectionGridComponent;
 
   readonly items$ = this.store.select(selectAllItems);
+  readonly selectedItems$ = this.store.select(selectAllItems); // TODO: Fix this
   readonly properties$ = this.store.select(selectAllProperties);
 
   onFileSelected(event: any) {

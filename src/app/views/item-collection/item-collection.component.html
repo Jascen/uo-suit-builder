@@ -1,14 +1,18 @@
-<div class="page-header">
-    <h4>Suit Builder</h4>
-    <h5>Select items and build a suit.</h5>
+<ng-container *ngLet="selectedItems$ | async as selectedItems">
+    <div class="page-header">
+        <h4>Suit Builder</h4>
+        <h5>Select items and build a suit.</h5>
 
-    <div class="page-actions">
-        <input hidden (change)="onFileSelected($event)" #fileInput type="file">
-        <button mat-flat-button (click)="fileInput.click()" color="basic">Import Item List</button>
+        <div class="page-actions">
+            <input hidden (change)="onFileSelected($event)" #fileInput type="file">
+            <button mat-flat-button (click)="fileInput.click()" color="basic">Import Item List</button>
 
-        <button mat-raised-button color="primary" (click)="onBuildClicked()">Build</button>
+            <button mat-raised-button color="{{selectedItems?.length ? 'primary' : 'warn'}}"
+                title="{{selectedItems?.length ? '' : 'Select items first'}}"
+                (click)="onBuildClicked()">Build</button>
+        </div>
     </div>
-</div>
 
-<app-item-collection-grid [properties]="properties$ | async" [rowData]="items$ | async"
-    [loading]="false"></app-item-collection-grid>
+    <app-item-collection-grid [properties]="properties$ | async" [rowData]="items$ | async"
+        [loading]="false"></app-item-collection-grid>
+</ng-container>
