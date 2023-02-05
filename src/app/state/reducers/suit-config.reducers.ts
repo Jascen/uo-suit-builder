@@ -1,7 +1,8 @@
 import { createEntityAdapter, EntityAdapter, EntityState } from "@ngrx/entity";
 import { createReducer, on } from "@ngrx/store";
 import { StatConfiguration } from "../models/suit-config.models";
-import * as fromActions from '../actions/suit-config.actions';
+import * as suitConfigActions from '../actions/suit-config.actions';
+import * as itemCollectionActions from '../actions/item-collection.actions';
 
 
 export interface SuitConfigState {
@@ -19,15 +20,15 @@ export const initialState = {
 
 export const reducer = createReducer(
     initialState,
-    on(fromActions.Actions.initialize, (state): SuitConfigState => {
+    on(suitConfigActions.Actions.initialize, (state): SuitConfigState => {
         return {
             ...state,
             activeStatConfigurationId: null
         }
     }),
     on(
-        fromActions.Actions.initializeSuccess,
-        fromActions.UserActions.importProperties,
+        suitConfigActions.Actions.initializeSuccess,
+        suitConfigActions.UserActions.importProperties,
         (state, { properties }): SuitConfigState => {
             return {
                 ...state,
@@ -35,13 +36,27 @@ export const reducer = createReducer(
             }
         }
     ),
-    on(fromActions.UserActions.selectProperty, (state, { propertyId }): SuitConfigState => {
+    on(suitConfigActions.UserActions.selectProperty, (state, { propertyId }): SuitConfigState => {
         return {
             ...state,
             activeStatConfigurationId: propertyId
         }
     }),
-    on(fromActions.UserActions.saveSettings, (state, { properties }): SuitConfigState => {
+    on(itemCollectionActions.UserActions.buildApproved, (state, { properties }): SuitConfigState => {
+        return {
+            ...state,
+            propertyOptions: itemAdapter.updateMany(properties.map(property => ({
+                id: property.id,
+                changes: {
+                    minimum: property.minimum,
+                    maximum: property.maximum,
+                    scalingFactor: property.scalingFactor,
+                    target: property.maximum
+                }
+            })), state.propertyOptions)
+        }
+    }),
+    on(suitConfigActions.UserActions.saveSettings, (state, { properties }): SuitConfigState => {
         return {
             ...state,
             propertyOptions: itemAdapter.setMany(properties, state.propertyOptions)

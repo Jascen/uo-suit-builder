@@ -1,15 +1,11 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { Store } from '@ngrx/store';
-import { map, take, tap } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation, Inject } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { StatConfiguration } from 'src/app/state/models/suit-config.models';
-import { selectAllProperties } from 'src/app/state/selectors/suit-config.selectors';
-import * as suitConfigActions from '../../state/actions/suit-config.actions'
 
 
-interface PageState {
+export interface BuildRequestSummaryDialogData {
   properties: StatConfiguration[];
-  data: Record<string, string>;
 }
 
 @Component({
@@ -19,39 +15,24 @@ interface PageState {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BuildRequestSummaryDialogComponent {
+export class BuildRequestSummaryDialogComponent implements OnInit {
 
-  readonly pageState$ = this.store.select(selectAllProperties).pipe(
-    map(properties => properties.reduce((acc, property) => {
-      if (property.minimum && property.target) {
-        acc.properties.push(property);
-
-        if (property.minimum !== property.target) {
-          acc.data[property.id] = `${property.minimum} to ${property.target}`;
-        } else {
-          acc.data[property.id] = `${property.minimum || property.target}`;
-        }
-      }
-
-      return acc;
-    }, {
-      properties: [],
-      data: {}
-    } as PageState))
-  );
-
-  onChangeSettings() {
-    this.dialogRef.afterClosed().pipe(
-      take(1),
-      tap(() => this.store.dispatch(suitConfigActions.Actions.navigateToSettings()))
-    ).subscribe();
-
-    this.dialogRef.close();
-  }
+  readonly form: FormGroup;
 
   constructor(
-    private store: Store,
-    private dialogRef: MatDialogRef<BuildRequestSummaryDialogComponent>
-  ) { }
+    @Inject(MAT_DIALOG_DATA) public data: BuildRequestSummaryDialogData,
+    private formBuilder: FormBuilder,
+    ) {
+    this.form = formBuilder.group({});
+  }
 
+  ngOnInit(): void {
+    this.data.properties.forEach(property =>
+      this.form.addControl(property.id, this.formBuilder.control({
+        maximum: property.maximum,
+        minimum: property.minimum,
+        scalingFactor: property.scalingFactor,
+        target: property.target
+      })));
+  }
 }

@@ -1,12 +1,11 @@
 import { Injectable } from "@angular/core";
 import { createEffect, ofType, concatLatestFrom, Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { filter, map, tap } from "rxjs";
+import { filter, map } from "rxjs";
 import { StatConfiguration } from "../models/suit-config.models";
 import * as suitConfigActions from '../actions/suit-config.actions';
 import * as fromSuitConfig from '../selectors/suit-config.selectors';
 import * as FileSaver from "file-saver";
-import { Router } from "@angular/router";
 
 
 @Injectable()
@@ -196,17 +195,9 @@ export class SuitConfigEffects {
     )
   });
 
-  navigateToSettings$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(suitConfigActions.Actions.navigateToSettings),
-      tap(action => this.router.navigateByUrl('/settings'))
-    )
-  }, { dispatch: false });
-
   constructor(
     private actions$: Actions,
     private store: Store,
-    private router: Router
   ) {
   }
 }

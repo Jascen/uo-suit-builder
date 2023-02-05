@@ -9,4 +9,9 @@ app-build-request-summary-dialog {
             }
         }
     }
+    
+    mat-panel-description {
+        max-width: 50%;
+        justify-content: space-between;
+    }
 }

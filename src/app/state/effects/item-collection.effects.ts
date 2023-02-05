@@ -5,12 +5,13 @@ import { filter, map, switchMap } from "rxjs";
 import { Item, ItemSlot } from "../models/item-collection.models";
 import { SuitBuilderService } from "src/app/services/suit-builder.service";
 import { MatDialog } from "@angular/material/dialog";
-import { BuildRequestSummaryDialogComponent } from "src/app/dialogs/build-request-summary-dialog/build-request-summary-dialog.component";
+import { BuildRequestSummaryDialogComponent, BuildRequestSummaryDialogData } from "src/app/dialogs/build-request-summary-dialog/build-request-summary-dialog.component";
+import { Suit } from "../models/suit-collection.models";
+import { PropertyRangeControlValue } from "src/app/components/property-range-control/property-range-control.component";
 import * as fromItemCollection from '../selectors/item-collection.selectors';
 import * as fromSuitConfig from '../selectors/suit-config.selectors';
 import * as suitBuilderActions from '../actions/suit-builder.actions';
 import * as itemCollectionActions from '../actions/item-collection.actions';
-import { Suit } from "../models/suit-collection.models";
 
 
 @Injectable()
@@ -50,14 +51,33 @@ export class ItemCollectionEffects {
             ofType(itemCollectionActions.UserActions.build),
             filter(action => !!action.itemIds?.length),
 
-            switchMap(action => {
+            concatLatestFrom(() => [this.store.select(fromSuitConfig.selectAllProperties), this.store.select(fromItemCollection.selectItemCollectionEntities)]),
+            switchMap(([action, properties]) => {
+                const filteredProperties = properties.filter(property => property.minimum || property.target);
                 const dialogRef = this.dialog.open(BuildRequestSummaryDialogComponent, {
-                    width: '500px'
+                    width: '500px',
+                    data: {
+                        properties: filteredProperties
+                    } as BuildRequestSummaryDialogData
                 });
                 return dialogRef.afterClosed().pipe(
-                    map((result: boolean) => result
-                        ? itemCollectionActions.UserActions.buildApproved({ itemIds: action.itemIds })
-                        : null),
+                    map((result: false | Record<string, PropertyRangeControlValue>) =>
+                        result
+                            ? itemCollectionActions.UserActions.buildApproved({
+                                itemIds: action.itemIds,
+                                properties: filteredProperties.map(property => {
+                                    const update = result[property.id];
+
+                                    return {
+                                        id: property.id,
+                                        minimum: update.minimum,
+                                        maximum: update.maximum,
+                                        scalingFactor: update.scalingFactor,
+                                        target: update.maximum
+                                    };
+                                })
+                            })
+                            : null),
                     filter(result => !!result)
                 )
             })

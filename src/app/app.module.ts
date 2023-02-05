@@ -34,6 +34,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ItemListComponent } from './components/item-list/item-list.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { BuildRequestSummaryDialogComponent } from './dialogs/build-request-summary-dialog/build-request-summary-dialog.component';
+import { PropertyRangeControlComponent } from './components/property-range-control/property-range-control.component';
 
 
 ModuleRegistry.registerModules([
@@ -57,6 +58,7 @@ ModuleRegistry.registerModules([
     ItemDetailListComponent,
     ItemListComponent,
     BuildRequestSummaryDialogComponent,
+    PropertyRangeControlComponent,
   ],
   imports: [
     BrowserModule,
