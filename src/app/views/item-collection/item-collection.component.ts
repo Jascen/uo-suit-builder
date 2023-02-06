@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, ViewEncapsul
 import { Store } from '@ngrx/store';
 import { selectActiveItemIdss, selectAllItems } from 'src/app/state/selectors/item-collection.selectors';
 import { selectAllProperties } from 'src/app/state/selectors/suit-config.selectors';
-import { ItemCollectionGridComponent } from './item-collection-grid/item-collection-grid.component';
 import { Papa } from 'ngx-papaparse';
 import * as itemCollectionActions from '../../state/actions/item-collection.actions'
 
@@ -64,7 +63,7 @@ export class ItemCollectionComponent {
   }
 
   onSelectedRowsChanged(itemIds: number[]) {
-    this.store.dispatch(itemCollectionActions.UserActions.selectItems({ itemIds }))
+    this.store.dispatch(itemCollectionActions.UserActions.selectItems({ itemIds }));
   }
 
   constructor(
