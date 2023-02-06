@@ -16,7 +16,6 @@ import * as itemCollectionActions from '../../state/actions/item-collection.acti
 })
 export class ItemCollectionComponent {
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef<HTMLInputElement>;
-  @ViewChild(ItemCollectionGridComponent, { static: false }) gridComponent!: ItemCollectionGridComponent;
 
   readonly items$ = this.store.select(selectAllItems);
   readonly selectedIds$ = this.store.select(selectActiveItemIdss);
@@ -61,8 +60,7 @@ export class ItemCollectionComponent {
   }
 
   onBuildClicked() {
-    const selectedItemIds = this.gridComponent.getSelected();
-    this.store.dispatch(itemCollectionActions.UserActions.build({ itemIds: selectedItemIds }));
+    this.store.dispatch(itemCollectionActions.UserActions.build());
   }
 
   onSelectedRowsChanged(itemIds: number[]) {

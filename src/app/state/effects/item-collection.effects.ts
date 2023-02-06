@@ -49,9 +49,8 @@ export class ItemCollectionEffects {
     promptToBuild$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(itemCollectionActions.UserActions.build),
-            filter(action => !!action.itemIds?.length),
 
-            concatLatestFrom(() => [this.store.select(fromSuitConfig.selectAllProperties), this.store.select(fromItemCollection.selectItemCollectionEntities)]),
+            concatLatestFrom(() => this.store.select(fromSuitConfig.selectAllProperties)),
             switchMap(([action, properties]) => {
                 const filteredProperties = properties.filter(property => property.minimum || property.target);
                 const dialogRef = this.dialog.open(BuildRequestSummaryDialogComponent, {
@@ -64,7 +63,6 @@ export class ItemCollectionEffects {
                     map((result: false | Record<string, PropertyRangeControlValue>) =>
                         result
                             ? itemCollectionActions.UserActions.buildApproved({
-                                itemIds: action.itemIds,
                                 properties: filteredProperties.map(property => {
                                     const update = result[property.id];
 
@@ -88,10 +86,14 @@ export class ItemCollectionEffects {
         return this.actions$.pipe(
             ofType(itemCollectionActions.UserActions.buildApproved),
 
-            concatLatestFrom(() => [this.store.select(fromSuitConfig.selectAllProperties), this.store.select(fromItemCollection.selectItemCollectionEntities)]),
+            concatLatestFrom(() => [
+                this.store.select(fromSuitConfig.selectAllProperties),
+                this.store.select(fromItemCollection.selectItemCollectionEntities),
+                this.store.select(fromItemCollection.selectActiveItemIdss),
+            ]),
 
-            map(([action, suitConfigOptions, itemEntities]) => {
-                const itemsByType = action.itemIds.reduce((acc, itemId) => {
+            map(([action, suitConfigOptions, itemEntities, itemIds]) => {
+                const itemsByType = itemIds.reduce((acc, itemId) => {
                     const item = itemEntities[itemId];
                     if (item) {
                         acc[item.slot] ??= [];

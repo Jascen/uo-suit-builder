@@ -109,13 +109,6 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
 
   getRowId = ({ data }: { data: Item }) => data.id.toString();
 
-  getSelected(): number[] {
-    const selectedNodes = this._gridApi?.getSelectedNodes();
-    if (!selectedNodes?.length) { return []; }
-
-    return selectedNodes.map(node => Number(node.id));
-  }
-
   onGridReady(params: GridReadyEvent) {
     this._gridApi = params.api;
     this._gridLoaded$.next(true);

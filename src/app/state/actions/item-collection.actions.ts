@@ -1,4 +1,4 @@
-import { createActionGroup, props } from '@ngrx/store';
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { Item } from '../models/item-collection.models';
 import { StatConfigurationUpdate } from '../models/suit-config.models';
 
@@ -9,7 +9,7 @@ export const UserActions = createActionGroup({
         'Import': props<{ items: (Item & { [id: string]: number })[] }>(),
         'Import Success': props<{ items: Item[] }>(),
         'Select Items': props<{ itemIds: number[] }>(),
-        'Build': props<{ itemIds: number[] }>(),
-        'Build Approved': props<{ itemIds: number[], properties: StatConfigurationUpdate[] }>(),
+        'Build': emptyProps(),
+        'Build Approved': props<{ properties: StatConfigurationUpdate[] }>(),
     }
 });
