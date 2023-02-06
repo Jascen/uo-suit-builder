@@ -50,20 +50,19 @@ export class ItemCollectionEffects {
         return this.actions$.pipe(
             ofType(itemCollectionActions.UserActions.build),
 
-            concatLatestFrom(() => this.store.select(fromSuitConfig.selectAllProperties)),
+            concatLatestFrom(() => this.store.select(fromSuitConfig.selectAllFilterableProperties)),
             switchMap(([action, properties]) => {
-                const filteredProperties = properties.filter(property => property.minimum || property.target);
                 const dialogRef = this.dialog.open(BuildRequestSummaryDialogComponent, {
                     width: '500px',
                     data: {
-                        properties: filteredProperties
+                        properties: properties
                     } as BuildRequestSummaryDialogData
                 });
                 return dialogRef.afterClosed().pipe(
                     map((result: false | Record<string, PropertyRangeControlValue>) =>
                         result
                             ? itemCollectionActions.UserActions.buildApproved({
-                                properties: filteredProperties.map(property => {
+                                properties: properties.map(property => {
                                     const update = result[property.id];
 
                                     return {
@@ -75,7 +74,8 @@ export class ItemCollectionEffects {
                                     };
                                 })
                             })
-                            : null),
+                            : null
+                    ),
                     filter(result => !!result)
                 )
             })
@@ -87,7 +87,7 @@ export class ItemCollectionEffects {
             ofType(itemCollectionActions.UserActions.buildApproved),
 
             concatLatestFrom(() => [
-                this.store.select(fromSuitConfig.selectAllProperties),
+                this.store.select(fromSuitConfig.selectAllFilterableProperties),
                 this.store.select(fromItemCollection.selectItemCollectionEntities),
                 this.store.select(fromItemCollection.selectActiveItemIdss),
             ]),
@@ -103,18 +103,36 @@ export class ItemCollectionEffects {
                     return acc;
                 }, {} as Record<ItemSlot, Item[]>);
 
-                const suit = this.suitBuilderService.createSuitIncrementally(itemsByType, suitConfigOptions);
-                const suitVariations = this.suitBuilderService.createSuitVariations(suit, itemsByType, suitConfigOptions);
-                const uniqueSuits = suitVariations.reduce((acc, suit) => {
-                    suit.items.sort((a, b) => a.slot.localeCompare(b.slot));
-                    suit.id = suit.items.map(item => `${item.slot}_${item.id}`).join('__');
+                const suits = [] as Suit[];
 
-                    acc[suit.id] = suit;
+                const iterations = 10;
+                for (let index = 0; index < iterations; index++) {
+                    const sourceSuit = this.suitBuilderService.createSuitIncrementally(itemsByType, suitConfigOptions);
+                    const suitVariations = this.suitBuilderService.createSuitVariations(sourceSuit, itemsByType, suitConfigOptions);
+                    const filteredSuits = suitVariations.reduce((acc, suit) => {
+                        suit.items.sort((a, b) => a.slot.localeCompare(b.slot));
+                        suit.id = suit.items.map(item => `${item.slot}_${item.id}`).join('__');
 
-                    return acc;
-                }, {} as Record<string, Suit>);
+                        const ignoreMinimumRequirements = true;
+                        if (ignoreMinimumRequirements || suitConfigOptions.every(property => (property.minimum ?? 0) <= suit.summary[property.id])) {
+                            acc[suit.id] = suit;
+                        }
 
-                return suitBuilderActions.UserActions.buildSuccess({ suits: Object.values(uniqueSuits).sort((a, b) => b.score - a.score) });
+                        return acc;
+                    }, {} as Record<string, Suit>);
+
+                    // Add suits
+                    Object.values(filteredSuits).forEach(suit => suits.push(suit));
+
+                    // Remove all pieces for the suit that was used to seed everything
+                    Object.keys(itemsByType).forEach(key => {
+                        const itemSlot = key as ItemSlot;
+                        const targetItem = sourceSuit.items.find(item => item.slot === itemSlot);
+                        itemsByType[itemSlot] = itemsByType[itemSlot].filter(item => item !== targetItem);
+                    });
+                }
+
+                return suitBuilderActions.UserActions.buildSuccess({ suits: suits.sort((a, b) => b.score - a.score) });
             })
         )
     });

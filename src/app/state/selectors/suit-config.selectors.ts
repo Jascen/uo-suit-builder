@@ -23,6 +23,11 @@ export const selectAllPropertiesSorted = createSelector(
     properties => [...properties].sort((a, b) => a.name.localeCompare(b.name))
 );
 
+export const selectAllFilterableProperties = createSelector(
+    selectAllProperties,
+    properties => properties.filter(property => property.minimum || property.target)
+);
+
 export const selectActiveProperty = createSelector(
     fromFeature.selectSuitConfigState,
     selectAllPropertyEntities,
