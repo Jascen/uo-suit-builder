@@ -51,7 +51,7 @@ export const reducer = createReducer(
                     minimum: property.minimum,
                     maximum: property.maximum,
                     scalingFactor: property.scalingFactor,
-                    target: property.maximum
+                    target: property.target
                 }
             })), state.propertyOptions)
         }
