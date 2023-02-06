@@ -73,7 +73,7 @@ export class ItemCollectionEffects {
                                         minimum: update.minimum,
                                         maximum: update.maximum,
                                         scalingFactor: update.scalingFactor,
-                                        target: update.maximum
+                                        target: update.target
                                     };
                                 })
                             })
