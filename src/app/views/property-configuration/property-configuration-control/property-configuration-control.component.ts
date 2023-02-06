@@ -52,8 +52,8 @@ export class PropertyConfigurationControlComponent implements OnInit, OnDestroy,
   writeValue(property: StatConfiguration): void {
     this.form.setValue({
       id: property.id,
-      name: property.name,
-      shortName: property.shortName,
+      name: property.name ?? '',
+      shortName: property.shortName ?? '',
       maximum: property.maximum,
       minimum: property.minimum,
       scalingFactor: property.scalingFactor,
