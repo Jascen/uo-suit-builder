@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
-import { ColDef, GridApi, GridReadyEvent, SelectionChangedEvent } from 'ag-grid-community';
-import { Subject, BehaviorSubject, combineLatest, filter, startWith, switchMap, takeUntil, tap, delay } from 'rxjs';
+import { ColDef, GridApi, GridReadyEvent, IRowNode, SelectionChangedEvent } from 'ag-grid-community';
+import { Subject, BehaviorSubject, filter, startWith, switchMap, takeUntil, tap } from 'rxjs';
 import { Item } from 'src/app/state/models/item-collection.models';
 
 
@@ -99,12 +99,23 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
     gridApi.deselectAll();
     if (!selectedRowIds?.length) { return; }
 
+    let selectedNode: IRowNode<Item>;
     selectedRowIds.forEach(id => {
       const rowNode = gridApi.getRowNode(id.toString());
-      if (rowNode && !rowNode.isSelected()) {
-        rowNode.setSelected(true);
+      if (!rowNode) { return; }
+
+      // Set the previous one if we set it.
+      if (selectedNode) {
+        selectedNode.setSelected(true, false, true);
       }
+
+      // Store it so we can execute a refresh on the final one
+      selectedNode = rowNode;
     });
+
+    if (selectedNode) {
+      selectedNode.setSelected(true, false, false);
+    }
   }
 
   getRowId = ({ data }: { data: Item }) => data.id.toString();
@@ -145,7 +156,7 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
         this._gridApi.setDefaultColDef(defaultColDef);
         this._gridApi.setColumnDefs(columnDefinitions);
 
-        // sET DATA
+        // Set Data
         const rowData = this.rowData || [];
         this._gridApi.setRowData(rowData);
 
