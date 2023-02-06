@@ -23,3 +23,8 @@ export const selectAllItemsByType = createSelector(
         return acc;
     }, {} as Record<ItemSlot, Item[]>)
 );
+
+export const selectActiveItemIdss = createSelector(
+    fromFeature.selectItemCollectionState,
+    state => state.activeIds
+);

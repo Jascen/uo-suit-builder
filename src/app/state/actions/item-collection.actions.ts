@@ -8,6 +8,7 @@ export const UserActions = createActionGroup({
     events: {
         'Import': props<{ items: (Item & { [id: string]: number })[] }>(),
         'Import Success': props<{ items: Item[] }>(),
+        'Select Items': props<{ itemIds: number[] }>(),
         'Build': props<{ itemIds: number[] }>(),
         'Build Approved': props<{ itemIds: number[], properties: StatConfigurationUpdate[] }>(),
     }

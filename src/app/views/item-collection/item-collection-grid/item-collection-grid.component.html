@@ -5,4 +5,5 @@
   [animateRows]="true"
   [getRowId]="getRowId"
   overlayNoRowsTemplate="No items available"
-  (gridReady)="onGridReady($event)"></ag-grid-angular>
+  (gridReady)="onGridReady($event)"
+  (selectionChanged)="onSelectionChanged($event)"></ag-grid-angular>

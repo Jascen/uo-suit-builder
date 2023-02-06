@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewEncapsulation } from '@angular/core';
-import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { ColDef, GridApi, GridReadyEvent, SelectionChangedEvent } from 'ag-grid-community';
 import { Subject, BehaviorSubject, combineLatest, filter, startWith, switchMap, takeUntil, tap, delay } from 'rxjs';
 import { Item } from 'src/app/state/models/item-collection.models';
 
@@ -28,9 +28,12 @@ export enum GridFilterModule {
 })
 export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy {
 
-  @Input() properties!: ItemProperty[] | null;
-  @Input() rowData!: Item[] | null;
+  @Input() properties: ItemProperty[];
+  @Input() rowData: Item[];
   @Input() loading: boolean = true;
+  @Input() selectedIds: number[];
+
+  @Output() selectedRowsChanged = new EventEmitter<number[]>();
 
   private _gridApi!: GridApi;
   private readonly _destroyed$ = new Subject();
@@ -90,6 +93,20 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
     };
   }
 
+  private setSelectedState(selectedRowIds: number[], gridApi?: GridApi) {
+    if (!gridApi) { return; }
+
+    gridApi.deselectAll();
+    if (!selectedRowIds?.length) { return; }
+
+    selectedRowIds.forEach(id => {
+      const rowNode = gridApi.getRowNode(id.toString());
+      if (rowNode && !rowNode.isSelected()) {
+        rowNode.setSelected(true);
+      }
+    });
+  }
+
   getRowId = ({ data }: { data: Item }) => data.id.toString();
 
   getSelected(): number[] {
@@ -104,10 +121,17 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
     this._gridLoaded$.next(true);
   }
 
+  onSelectionChanged(event: SelectionChangedEvent) {
+    const selectedRows = event.api.getSelectedRows() as Item[];
+    this.selectedRowsChanged.emit(selectedRows.map(item => item.id));
+  }
+
   constructor() { }
 
-  ngOnChanges(): void {
-    this._reloadData$.next(null);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['loading'] || changes['rowData']) {
+      this._reloadData$.next(null);
+    }
   }
 
   ngOnDestroy(): void {
@@ -128,8 +152,12 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
         this._gridApi.setDefaultColDef(defaultColDef);
         this._gridApi.setColumnDefs(columnDefinitions);
 
+        // sET DATA
         const rowData = this.rowData || [];
         this._gridApi.setRowData(rowData);
+
+        // Select rows
+        this.setSelectedState(this.selectedIds, this._gridApi);
       }),
       takeUntil(this._destroyed$)
     ).subscribe();

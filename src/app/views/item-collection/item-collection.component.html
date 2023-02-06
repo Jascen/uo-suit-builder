@@ -1,4 +1,4 @@
-<ng-container *ngLet="selectedItems$ | async as selectedItems">
+<ng-container *ngLet="selectedIds$ | async as selectedIds">
     <div class="page-header">
         <h4>Suit Builder</h4>
         <h5>Select items and build a suit.</h5>
@@ -7,12 +7,11 @@
             <input hidden (change)="onFileSelected($event)" #fileInput type="file">
             <button mat-flat-button (click)="fileInput.click()" color="basic">Import Item List</button>
 
-            <button mat-raised-button color="{{selectedItems?.length ? 'primary' : 'warn'}}"
-                title="{{selectedItems?.length ? '' : 'Select items first'}}"
-                (click)="onBuildClicked()">Build</button>
+            <button mat-raised-button color="{{selectedIds?.length ? 'primary' : 'warn'}}"
+                title="{{selectedIds?.length ? '' : 'Select items first'}}" (click)="onBuildClicked()">Build</button>
         </div>
     </div>
 
     <app-item-collection-grid [properties]="properties$ | async" [rowData]="items$ | async"
-        [loading]="false"></app-item-collection-grid>
+        [selectedIds]="selectedIds" [loading]="false" (selectedRowsChanged)="onSelectedRowsChanged($event)"></app-item-collection-grid>
 </ng-container>

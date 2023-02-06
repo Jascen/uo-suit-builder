@@ -6,6 +6,7 @@ import * as fromActions from '../actions/item-collection.actions';
 
 export interface ItemCollectionState {
     items: EntityState<Item>;
+    activeIds: number[];
 }
 
 export const itemAdapter: EntityAdapter<Item> = createEntityAdapter<Item>({
@@ -25,6 +26,12 @@ export const reducer = createReducer(
         return {
             ...state,
             items: itemAdapter.setAll(items, state.items)
+        }
+    }),
+    on(fromActions.UserActions.selectItems, (state, { itemIds }): ItemCollectionState => {
+        return {
+            ...state,
+            activeIds: itemIds
         }
     })
 );

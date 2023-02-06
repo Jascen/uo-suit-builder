@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { selectAllItems } from 'src/app/state/selectors/item-collection.selectors';
+import { selectActiveItemIdss, selectAllItems } from 'src/app/state/selectors/item-collection.selectors';
 import { selectAllProperties } from 'src/app/state/selectors/suit-config.selectors';
 import { ItemCollectionGridComponent } from './item-collection-grid/item-collection-grid.component';
 import { Papa } from 'ngx-papaparse';
@@ -19,7 +19,7 @@ export class ItemCollectionComponent {
   @ViewChild(ItemCollectionGridComponent, { static: false }) gridComponent!: ItemCollectionGridComponent;
 
   readonly items$ = this.store.select(selectAllItems);
-  readonly selectedItems$ = this.store.select(selectAllItems); // TODO: Fix this
+  readonly selectedIds$ = this.store.select(selectActiveItemIdss);
   readonly properties$ = this.store.select(selectAllProperties);
 
   onFileSelected(event: any) {
@@ -63,6 +63,10 @@ export class ItemCollectionComponent {
   onBuildClicked() {
     const selectedItemIds = this.gridComponent.getSelected();
     this.store.dispatch(itemCollectionActions.UserActions.build({ itemIds: selectedItemIds }));
+  }
+
+  onSelectedRowsChanged(itemIds: number[]) {
+    this.store.dispatch(itemCollectionActions.UserActions.selectItems({ itemIds }))
   }
 
   constructor(
