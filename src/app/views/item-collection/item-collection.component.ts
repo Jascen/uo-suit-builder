@@ -20,8 +20,7 @@ export class ItemCollectionComponent {
   readonly selectedIds$ = this.store.select(selectActiveItemIdss);
   readonly properties$ = this.store.select(selectAllProperties);
 
-  onFileSelected(event: any) {
-    const files: FileList = event?.target?.files;
+  onFileSelected(files: FileList) {
     if (!files?.length) return;
 
     const file = files[0];

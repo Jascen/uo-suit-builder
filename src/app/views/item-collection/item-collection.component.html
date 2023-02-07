@@ -4,7 +4,7 @@
         <h5>Select items and build a suit.</h5>
 
         <div class="page-actions">
-            <input hidden (change)="onFileSelected($event)" #fileInput type="file">
+            <input hidden (change)="onFileSelected($any($event.target).files)" #fileInput type="file">
             <button mat-flat-button (click)="fileInput.click()" color="basic">Import Item List</button>
 
             <button mat-raised-button color="{{selectedIds?.length ? 'primary' : 'warn'}}"
@@ -13,5 +13,7 @@
     </div>
 
     <app-item-collection-grid [properties]="properties$ | async" [rowData]="items$ | async"
-        [selectedIds]="selectedIds" [loading]="false" (selectedRowsChanged)="onSelectedRowsChanged($event)"></app-item-collection-grid>
+        [selectedIds]="selectedIds" [loading]="false" (selectedRowsChanged)="onSelectedRowsChanged($event)"
+        fileDragDrop
+        (fileDropped)="onFileSelected($event)"></app-item-collection-grid>
 </ng-container>
