@@ -46,9 +46,12 @@ export class PropertyConfigurationFormComponent implements OnInit, OnChanges {
     reader.onload = (e: any) => {
       try {
         const text: string = e.target.result;
-        if (!text) return;
+        if (!text) { return; }
 
-        const extension = file.name?.split('.')[1];
+        const splitFilename = file.name?.split('.');
+        if (!splitFilename) { return; }
+
+        const extension = splitFilename[splitFilename.length - 1];
         switch (extension) {
           case 'json':
             this.store.dispatch(suitConfigActions.UserActions.importProperties({ properties: JSON.parse(text) }))

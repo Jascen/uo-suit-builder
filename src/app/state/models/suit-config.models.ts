@@ -1,5 +1,6 @@
 export interface StatConfiguration {
     id: string;
+    commonProperty: boolean;
     name: string;
     shortName: string;
     minimum: number;

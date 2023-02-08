@@ -18,7 +18,6 @@ export class SuitConfigEffects {
       filter(([action, loaded]) => !loaded),
 
       map(() => {
-        // TODO: Make configurable
         const properties = [
           // Resistances
           {
@@ -28,7 +27,8 @@ export class SuitConfigEffects {
             minimum: 60,
             target: 70,
             maximum: 75,
-            scalingFactor: 1
+            scalingFactor: 1,
+            commonProperty: true
           },
           {
             id: "fire_res",
@@ -37,7 +37,8 @@ export class SuitConfigEffects {
             minimum: 60,
             target: 70,
             maximum: 75,
-            scalingFactor: 1.5
+            scalingFactor: 1.2,
+            commonProperty: true
           },
           {
             id: "cold_res",
@@ -46,7 +47,8 @@ export class SuitConfigEffects {
             minimum: 60,
             target: 70,
             maximum: 75,
-            scalingFactor: 1
+            scalingFactor: 1,
+            commonProperty: true
           },
           {
             id: "poison_res",
@@ -55,7 +57,8 @@ export class SuitConfigEffects {
             minimum: 50,
             target: 60,
             maximum: 75,
-            scalingFactor: 1
+            scalingFactor: 1,
+            commonProperty: true
           },
           {
             id: "energy_res",
@@ -64,7 +67,8 @@ export class SuitConfigEffects {
             minimum: 60,
             target: 70,
             maximum: 75,
-            scalingFactor: 1.5
+            scalingFactor: 1.2,
+            commonProperty: true
           },
           {
             id: "lmc",
@@ -73,7 +77,7 @@ export class SuitConfigEffects {
             minimum: 20,
             target: 40,
             maximum: 40,
-            scalingFactor: 2
+            scalingFactor: 1.2,
           },
           {
             id: "hp_inc",
@@ -82,7 +86,7 @@ export class SuitConfigEffects {
             minimum: 0,
             target: 40,
             maximum: 40,
-            scalingFactor: 1.2
+            scalingFactor: 1
           },
           {
             id: "str",
@@ -127,7 +131,7 @@ export class SuitConfigEffects {
             minimum: 0,
             target: 0,
             maximum: 0,
-            scalingFactor: 1.0
+            scalingFactor: 1
           },
           {
             id: "mana_regen",
@@ -136,7 +140,7 @@ export class SuitConfigEffects {
             minimum: 0,
             target: 10,
             maximum: 20,
-            scalingFactor: 1.5
+            scalingFactor: 1.2
           },
           {
             id: "stam_inc",
@@ -187,7 +191,7 @@ export class SuitConfigEffects {
       concatLatestFrom(() => this.store.select(fromSuitConfig.selectAllProperties)),
 
       map(([action, properties]) => {
-        const file = new File([JSON.stringify(properties, null, '\t')], "uo-suit-builder--properties.json", { type: "application/json;charset=utf-8" });
+        const file = new File([JSON.stringify(properties, null, '\t')], "uo-suit-builder.properties.json", { type: "application/json;charset=utf-8" });
         FileSaver.saveAs(file);
 
         return suitConfigActions.Actions.initializeSuccess({ properties });
