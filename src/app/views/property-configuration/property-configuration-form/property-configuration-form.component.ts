@@ -98,10 +98,6 @@ export class PropertyConfigurationFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['selectedProperty'] && this.selectedProperty) {
-      this.form.get(this.selectedProperty.id).setValue(this.selectedProperty);
-    }
-
     if (changes['properties']) {
       this.resetForm();
     }

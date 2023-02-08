@@ -99,7 +99,10 @@ export class PropertyConfigurationControlComponent implements OnInit, OnDestroy,
     this.form.get('id').disable();
 
     this.form.valueChanges.pipe(
-      tap(change => this.onChange(change as any)),
+      tap(change => {
+        change.id = this.form.get('id').value;
+        this.onChange(change as any)
+      }),
       takeUntil(this._destroyed$)
     ).subscribe();
   }
