@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ColDef, GridApi, GridReadyEvent, RowSelectedEvent } from 'ag-grid-community';
 import { Subject, BehaviorSubject, filter, startWith, switchMap, takeUntil, tap } from 'rxjs';
+import { FloatingGreaterThanOrEqualComponent } from 'src/app/components-grid/floating-greater-than-or-equal/floating-greater-than-or-equal.component';
 import { Suit } from 'src/app/state/models/suit-collection.models';
 
 
@@ -45,11 +46,11 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
       resizable: true,
       width: 130,
 
+      suppressMenu: true,
       floatingFilter: true,
-      filterParams: {
-        buttons: ['reset', 'apply'],
-        closeOnApply: true,
-      }
+      floatingFilterComponentParams: { suppressFilterButton: true },
+      filter: GridFilterModule.Number,
+      floatingFilterComponent: FloatingGreaterThanOrEqualComponent,
     } as PageColDef;
 
     const columnDefinitions = [] as PageColDef[];
@@ -58,7 +59,6 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
       columnDefinitions.push({
         field: property.id,
         headerName: property.shortName ?? property.name,
-        filter: GridFilterModule.Number,
         valueGetter: params => params.data?.summary ? params.data.summary[property.id] : null
       } as PageColDef);
     });

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { ColDef, GridApi, GridReadyEvent, IRowNode, SelectionChangedEvent } from 'ag-grid-community';
 import { Subject, BehaviorSubject, filter, startWith, switchMap, takeUntil, tap } from 'rxjs';
+import { FloatingGreaterThanOrEqualComponent } from 'src/app/components-grid/floating-greater-than-or-equal/floating-greater-than-or-equal.component';
 import { Item } from 'src/app/state/models/item-collection.models';
 
 
@@ -52,12 +53,9 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
       resizable: true,
       width: 130,
 
+      suppressMenu: true,
       floatingFilter: true,
-      filter: GridFilterModule.Text,
-      filterParams: {
-        buttons: ['reset', 'apply'],
-        closeOnApply: true,
-      }
+      floatingFilterComponentParams: { suppressFilterButton: true },
     } as PageColDef;
 
     const columnDefinitions = [] as PageColDef[];
@@ -70,11 +68,14 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
         headerCheckboxSelection: true,
         headerCheckboxSelectionFilteredOnly: true,
         lockPosition: true,
+        filter: GridFilterModule.Text,
         pinned: 'left',
       },
       {
         field: 'slot',
         pinned: 'left',
+        lockPosition: true,
+        filter: GridFilterModule.Text,
       },
     );
 
@@ -83,6 +84,8 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
         field: property.id,
         headerName: property.shortName ?? property.name,
         filter: GridFilterModule.Number,
+        floatingFilterComponent: FloatingGreaterThanOrEqualComponent,
+        floatingFilterComponentParams: { suppressFilterButton: true },
         valueGetter: params => params.data?.properties[property.id]
       } as PageColDef);
     });

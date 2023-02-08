@@ -49,3 +49,8 @@ body {
 ::-webkit-scrollbar-thumb {
     background: #686868;
 }
+
+// Fix for suppressFilterButton
+.ag-input-wrapper {
+    padding: 0 2px;
+}

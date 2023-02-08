@@ -21,7 +21,7 @@ import { SuitCollectionComponent } from './views/suit-collection/suit-collection
 import { SuitCollectionGridComponent } from './views/suit-collection/suit-collection-grid/suit-collection-grid.component';
 import { SidenavComponent } from './views/sidenav/sidenav.component';
 import { PropertyConfigurationComponent } from './views/property-configuration/property-configuration.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PropertyConfigurationFormComponent } from './views/property-configuration/property-configuration-form/property-configuration-form.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
@@ -36,6 +36,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { BuildRequestSummaryDialogComponent } from './dialogs/build-request-summary-dialog/build-request-summary-dialog.component';
 import { PropertyRangeControlComponent } from './components/property-range-control/property-range-control.component';
 import { FileDragDropDirective } from './directives/file-drag-drop.directive';
+import { FloatingGreaterThanOrEqualComponent } from './components-grid/floating-greater-than-or-equal/floating-greater-than-or-equal.component';
 
 
 ModuleRegistry.registerModules([
@@ -61,11 +62,13 @@ ModuleRegistry.registerModules([
     BuildRequestSummaryDialogComponent,
     PropertyRangeControlComponent,
     FileDragDropDirective,
+    FloatingGreaterThanOrEqualComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    FormsModule,
     ReactiveFormsModule,
     StoreModule.forRoot({}, {}),
     EffectsModule.forRoot(effects),
