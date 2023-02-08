@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { ColDef, GridApi, GridReadyEvent, RowSelectedEvent } from 'ag-grid-community';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { ColDef, FilterChangedEvent, GridApi, GridReadyEvent, RowSelectedEvent } from 'ag-grid-community';
 import { Subject, BehaviorSubject, filter, startWith, switchMap, takeUntil, tap } from 'rxjs';
 import { FloatingGreaterThanOrEqualComponent } from 'src/app/components-grid/floating-greater-than-or-equal/floating-greater-than-or-equal.component';
 import { Suit } from 'src/app/state/models/suit-collection.models';
@@ -32,8 +32,10 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
   @Input() properties!: ItemProperty[];
   @Input() rowData!: Suit[];
   @Input() loading: boolean = true;
+  @Input() gridFilter: {};
 
   @Output() suitSelected = new EventEmitter<string>();
+  @Output() filterChanged = new EventEmitter<{}>();
 
   private _gridApi!: GridApi;
   private readonly _destroyed$ = new Subject();
@@ -78,6 +80,10 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
     return selectedNodes.map(node => Number(node.id));
   }
 
+  onFilterChanged(event: FilterChangedEvent) {
+    this.filterChanged.emit(event.api.getFilterModel());
+  }
+
   onGridReady(params: GridReadyEvent) {
     this._gridApi = params.api;
     this._gridLoaded$.next(true);
@@ -89,8 +95,10 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
 
   constructor() { }
 
-  ngOnChanges(): void {
-    this._reloadData$.next(null);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['loading'] || changes['rowData']) {
+      this._reloadData$.next(null);
+    }
   }
 
   ngOnDestroy(): void {
@@ -107,12 +115,17 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
         this._gridApi.showLoadingOverlay();
         if (this.loading) { return; }
 
+        // Set columns
         const { defaultColDef, columnDefinitions } = this.createColumns(this.properties ?? []);
         this._gridApi.setDefaultColDef(defaultColDef);
         this._gridApi.setColumnDefs(columnDefinitions);
 
+        // Set data
         const rowData = this.rowData || [];
         this._gridApi.setRowData(rowData);
+
+        // Set filter
+        this._gridApi.setFilterModel(this.gridFilter ?? {});
       }),
       takeUntil(this._destroyed$)
     ).subscribe();

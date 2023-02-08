@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, ViewChild, ViewEncapsulation } from
 import { Store } from '@ngrx/store';
 import { selectAllProperties, selectAllPropertiesSorted } from 'src/app/state/selectors/suit-config.selectors';
 import { SuitCollectionGridComponent } from './suit-collection-grid/suit-collection-grid.component';
-import { selectActiveSuit, selectAllSuits } from 'src/app/state/selectors/suit-collection.selectors';
+import { selectActiveSuit, selectAllSuits, selectGridFilter } from 'src/app/state/selectors/suit-collection.selectors';
 import * as suitCollectionActions from '../../state/actions/suit-collection.actions';
 
 
@@ -20,9 +20,14 @@ export class SuitCollectionComponent {
   readonly selectedSuit$ = this.store.select(selectActiveSuit);
   readonly properties$ = this.store.select(selectAllProperties);
   readonly sortedProperties$ = this.store.select(selectAllPropertiesSorted);
+  readonly gridFilter$ = this.store.select(selectGridFilter);
 
   onSuitSelected(suitId: string) {
     this.store.dispatch(suitCollectionActions.UserActions.selectSuit({ suitId }));
+  }
+
+  onFilterChanged(gridFilter: {}) {
+    this.store.dispatch(suitCollectionActions.UserActions.updateGridFilter({ gridFilter }));
   }
 
   constructor(private store: Store) { }

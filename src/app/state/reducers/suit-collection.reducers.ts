@@ -8,6 +8,7 @@ import * as suitBuilderActions from '../actions/suit-builder.actions';
 export interface SuitCollectionState {
     suits: EntityState<Suit>;
     activeSuitId?: string;
+    gridFilter: {};
 }
 
 export const itemAdapter: EntityAdapter<Suit> = createEntityAdapter<Suit>({
@@ -37,7 +38,13 @@ export const reducer = createReducer(
             ...state,
             suits: itemAdapter.setAll(suits, state.suits)
         }
-    })
+    }),
+    on(suitCollectionActions.UserActions.updateGridFilter, (state, { gridFilter }): SuitCollectionState => {
+        return {
+            ...state,
+            gridFilter
+        }
+    }),
 );
 
 export const {

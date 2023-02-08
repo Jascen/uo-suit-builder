@@ -23,3 +23,8 @@ export const selectActiveSuit = createSelector(
     selectAllSuitEntities,
     (state, entities) => state.activeSuitId ? entities[state.activeSuitId] : null
 );
+
+export const selectGridFilter = createSelector(
+    fromFeature.selectSuitCollectionState,
+    state => state.gridFilter
+);

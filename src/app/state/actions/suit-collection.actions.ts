@@ -13,5 +13,6 @@ export const UserActions = createActionGroup({
     source: 'Suit Collection - User',
     events: {
         'Select Suit': props<{ suitId: string }>(),
+        'Update Grid Filter': props<{ gridFilter: {} }>(),
     }
 });

@@ -7,12 +7,14 @@
 </div>
 
 <div class="content-container">
-    <app-suit-collection-grid [properties]="properties$ | async" [rowData]="suits$ | async" [loading]="false"
-        (suitSelected)="onSuitSelected($event)"></app-suit-collection-grid>
+    <app-suit-collection-grid [properties]="properties$ | async" [rowData]="suits$ | async"
+        [gridFilter]="gridFilter$ | async" [loading]="false" (suitSelected)="onSuitSelected($event)"
+        (filterChanged)="onFilterChanged($event)"></app-suit-collection-grid>
 
     <div class="suit-summary" *ngLet="selectedSuit$ | async as selectedSuit">
         <ng-container *ngIf="selectedSuit">
-            <app-item-detail-list [properties]="properties$ | async" [dataSource]="selectedSuit.summary"></app-item-detail-list>
+            <app-item-detail-list [properties]="properties$ | async"
+                [dataSource]="selectedSuit.summary"></app-item-detail-list>
 
             <app-item-list [items]="selectedSuit.items" [properties]="properties$ | async"></app-item-list>
         </ng-container>
