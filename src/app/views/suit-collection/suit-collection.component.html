@@ -7,7 +7,7 @@
 </div>
 
 <div class="content-container">
-    <app-suit-collection-grid [properties]="properties$ | async" [rowData]="suits$ | async"
+    <app-suit-collection-grid [properties]="filteredProperties$ | async" [rowData]="suits$ | async"
         [gridFilter]="gridFilter$ | async" [loading]="false" (suitSelected)="onSuitSelected($event)"
         (filterChanged)="onFilterChanged($event)"></app-suit-collection-grid>
 

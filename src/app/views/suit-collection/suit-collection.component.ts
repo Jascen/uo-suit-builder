@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { selectAllProperties, selectAllPropertiesSorted } from 'src/app/state/selectors/suit-config.selectors';
+import { selectAllFilterableProperties, selectAllProperties } from 'src/app/state/selectors/suit-config.selectors';
 import { SuitCollectionGridComponent } from '../../components/suit-collection-grid/suit-collection-grid.component';
 import { selectActiveSuit, selectAllSuits, selectGridFilter } from 'src/app/state/selectors/suit-collection.selectors';
 import * as suitCollectionActions from '../../state/actions/suit-collection.actions';
@@ -19,7 +19,7 @@ export class SuitCollectionComponent implements OnDestroy {
   readonly suits$ = this.store.select(selectAllSuits);
   readonly selectedSuit$ = this.store.select(selectActiveSuit);
   readonly properties$ = this.store.select(selectAllProperties);
-  readonly sortedProperties$ = this.store.select(selectAllPropertiesSorted);
+  readonly filteredProperties$ = this.store.select(selectAllFilterableProperties);
   readonly gridFilter$ = this.store.select(selectGridFilter);
 
   onSuitSelected(suitId: string) {
