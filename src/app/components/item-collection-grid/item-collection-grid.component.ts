@@ -82,7 +82,7 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
     itemProperties.forEach(property => {
       columnDefinitions.push({
         field: property.id,
-        headerName: property.shortName ?? property.name,
+        headerName: property.shortName || property.name,
         filter: GridFilterModule.Number,
         floatingFilterComponent: FloatingGreaterThanOrEqualComponent,
         floatingFilterComponentParams: { suppressFilterButton: true },

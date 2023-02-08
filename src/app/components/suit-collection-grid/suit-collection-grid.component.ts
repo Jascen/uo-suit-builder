@@ -60,7 +60,7 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
     itemProperties.forEach(property => {
       columnDefinitions.push({
         field: property.id,
-        headerName: property.shortName ?? property.name,
+        headerName: property.shortName || property.name,
         valueGetter: params => params.data?.summary ? params.data.summary[property.id] : null
       } as PageColDef);
     });
