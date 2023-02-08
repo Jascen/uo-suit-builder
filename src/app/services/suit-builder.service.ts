@@ -6,18 +6,55 @@ import { StatConfiguration } from '../state/models/suit-config.models';
 import { copyObjectKeys } from '../utilities/object.utilities';
 
 
+export enum BuilderAlgorithmType {
+  BestScore,
+  UncommonProperties
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class SuitBuilderService {
 
-  createSuitIncrementally(itemsByType: Record<ItemSlot, Item[]>, suitConfigOptions: StatConfiguration[]) {
-    const emptySuit = copyObjectKeys<Item>(itemsByType);
+  createSuits(algorithm: BuilderAlgorithmType, itemsByType: Record<ItemSlot, Item[]>, suitConfigOptions: StatConfiguration[]) {
+    switch (algorithm) {
+      case BuilderAlgorithmType.UncommonProperties:
+        return this.chooseUncommonProperties(itemsByType, suitConfigOptions);
 
-    return this.chooseLowestCostRecursive(emptySuit, itemsByType, suitConfigOptions);
+      case BuilderAlgorithmType.BestScore:
+        return this.createSuitIncrementally(itemsByType, suitConfigOptions);
+
+      default:
+        return [];
+    }
   }
 
-  createSuitVariations(startingSuit: Suit, itemsByType: Record<ItemSlot, Item[]>, suitConfigOptions: StatConfiguration[]) {
+  private createSuitIncrementally(itemsByType: Record<ItemSlot, Item[]>, suitConfigOptions: StatConfiguration[]): Suit[] {
+    const suits = [] as Suit[];
+    const iterations = 10;
+    for (let index = 0; index < iterations; index++) {
+      // Build source suit via best score
+      const emptySuit = copyObjectKeys<Item>(itemsByType);
+      const sourceSuit = this.chooseBestScoreRecursive(emptySuit, itemsByType, suitConfigOptions);
+
+      // Vary the suit
+      const suitVariations = this.createSuitVariations(sourceSuit, itemsByType, suitConfigOptions);
+
+      // Add suits
+      suitVariations.forEach(suit => suits.push(suit));
+
+      // Remove all pieces for the suit that was used to seed everything so next iteration does not rebuild the same suit
+      Object.keys(itemsByType).forEach(key => {
+        const itemSlot = key as ItemSlot;
+        const targetItem = sourceSuit.items.find(item => item.slot === itemSlot);
+        itemsByType[itemSlot] = itemsByType[itemSlot].filter(item => item !== targetItem);
+      });
+    }
+
+    return suits;
+  }
+
+  private createSuitVariations(startingSuit: Suit, itemsByType: Record<ItemSlot, Item[]>, suitConfigOptions: StatConfiguration[]) {
     const emptySuit = copyObjectKeys<Item, ItemSlot>(itemsByType);
 
     const suits = [] as Suit[];
@@ -30,12 +67,12 @@ export class SuitBuilderService {
           ...itemsByType,
           [suitItem.slot]: items.filter(item => item.id !== suitItem.id)
         };
-        const suitWithoutItem = this.chooseLowestCostRecursive({ ...emptySuit }, filteredItemsByType, suitConfigOptions);
+        const suitWithoutItem = this.chooseBestScoreRecursive({ ...emptySuit }, filteredItemsByType, suitConfigOptions);
         suits.push(suitWithoutItem);
       }
 
       // Start with this item when building the suit
-      const suitStartingItem = this.chooseLowestCostRecursive({
+      const suitStartingItem = this.chooseBestScoreRecursive({
         ...emptySuit,
         [suitItem.slot]: suitItem
       }, itemsByType, suitConfigOptions);
@@ -45,17 +82,42 @@ export class SuitBuilderService {
     return suits;
   }
 
-  private createSuitSummary(suit: Record<ItemSlot, Item>) {
-    return Object.values(suit).reduce((acc, item) => {
-      Object.entries(item.properties).forEach(([id, value]) => {
-        acc[id] ??= 0;
-        acc[id] += value;
-      })
+  private chooseUncommonProperties(itemsBySlot: Record<ItemSlot, Item[]>, suitConfigOptions: StatConfiguration[]): Suit[] {
+    const uncommonProperties = suitConfigOptions.reduce((acc, property) => {
+      if (!property.commonProperty) {
+        acc[property.id] = property;
+      }
       return acc;
-    }, {} as Record<string, number>);
+    }, {} as Record<string, StatConfiguration>);
+
+    const itemsWithUncommonPropertiesBySlot = Object.values(itemsBySlot).reduce((acc, items) => {
+      items.forEach((item) => {
+        if (Object.keys(item.properties).some(propertyId => !!uncommonProperties[propertyId])) {
+          acc[item.slot] ??= [];
+          acc[item.slot].push(item);
+        }
+      });
+
+      return acc;
+    }, {} as Record<ItemSlot, Item[]>);
+
+    return Object.values(itemsWithUncommonPropertiesBySlot).reduce((acc, items) => {
+      items.forEach(item => {
+        // Start the suit with every item that has an uncommon property
+        const suit = copyObjectKeys<Item>(itemsBySlot);
+        suit[item.slot] = item;
+
+        const sourceSuit = this.chooseBestScoreRecursive(suit, itemsWithUncommonPropertiesBySlot, suitConfigOptions);
+        if (sourceSuit) {
+          acc.push(sourceSuit);
+        }
+      });
+
+      return acc;
+    }, [] as Suit[]);
   }
 
-  private chooseLowestCostRecursive(suit: Record<ItemSlot, Item>, itemsBySlot: Record<ItemSlot, Item[]>, suitConfigOptions: StatConfiguration[]): Suit {
+  private chooseBestScoreRecursive(suit: Record<ItemSlot, Item>, itemsBySlot: Record<ItemSlot, Item[]>, suitConfigOptions: StatConfiguration[]): Suit {
     // Iterate all the slots that are missing items
     const slotWinner = Object.entries(suit)
       .map((([slot, item]) => !item ? itemsBySlot[slot as ItemSlot] : []))
@@ -70,18 +132,20 @@ export class SuitBuilderService {
           return !acc || acc.score < scoredSuit.score ? scoredSuit : acc;
         }, null as Suit);
 
+        // Choose if no previous value or the score is better
         return !slotCandidate || itemCandidate?.score < slotCandidate.score ? itemCandidate : slotCandidate;
       }, null);
 
     if (!slotWinner) { return null; }
 
+    // Assign the item to the Suit
     const item = slotWinner.items[slotWinner.items.length - 1];
     suit[item.slot] = item;
 
-    return this.chooseLowestCostRecursive(suit, itemsBySlot, suitConfigOptions) ?? slotWinner;
+    return this.chooseBestScoreRecursive(suit, itemsBySlot, suitConfigOptions) ?? slotWinner;
   }
 
-  tryCreateSuit(
+  private tryCreateSuit(
     item: Item,
     suit: Item[],
     suitConfigOptions: StatConfiguration[],

@@ -3,7 +3,7 @@ import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { filter, map, switchMap } from "rxjs";
 import { Item, ItemSlot } from "../models/item-collection.models";
-import { SuitBuilderService } from "src/app/services/suit-builder.service";
+import { BuilderAlgorithmType, SuitBuilderService } from "src/app/services/suit-builder.service";
 import { MatDialog } from "@angular/material/dialog";
 import { BuildRequestSummaryDialogComponent, BuildRequestSummaryDialogData } from "src/app/dialogs/build-request-summary-dialog/build-request-summary-dialog.component";
 import { Suit } from "../models/suit-collection.models";
@@ -102,37 +102,24 @@ export class ItemCollectionEffects {
 
                     return acc;
                 }, {} as Record<ItemSlot, Item[]>);
+                const suits = this.suitBuilderService.createSuits(BuilderAlgorithmType.UncommonProperties, itemsByType, suitConfigOptions);
+                // const suits = this.suitBuilderService.createSuits(BuilderAlgorithmType.BestScore, itemsByType, suitConfigOptions);
 
-                const suits = [] as Suit[];
+                // De-dupe the suits
+                const filteredSuits = suits.reduce((acc, suit) => {
+                    suit.items.sort((a, b) => a.slot.localeCompare(b.slot));
+                    suit.id = suit.items.map(item => `${item.slot}_${item.id}`).join('__');
 
-                const iterations = 10;
-                for (let index = 0; index < iterations; index++) {
-                    const sourceSuit = this.suitBuilderService.createSuitIncrementally(itemsByType, suitConfigOptions);
-                    const suitVariations = this.suitBuilderService.createSuitVariations(sourceSuit, itemsByType, suitConfigOptions);
-                    const filteredSuits = suitVariations.reduce((acc, suit) => {
-                        suit.items.sort((a, b) => a.slot.localeCompare(b.slot));
-                        suit.id = suit.items.map(item => `${item.slot}_${item.id}`).join('__');
+                    // Configurable - Filter out suits that do not meet minimum requirements
+                    const ignoreMinimumRequirements = true;
+                    if (ignoreMinimumRequirements || suitConfigOptions.every(property => (property.minimum ?? 0) <= suit.summary[property.id])) {
+                        acc[suit.id] = suit;
+                    }
 
-                        const ignoreMinimumRequirements = true;
-                        if (ignoreMinimumRequirements || suitConfigOptions.every(property => (property.minimum ?? 0) <= suit.summary[property.id])) {
-                            acc[suit.id] = suit;
-                        }
+                    return acc;
+                }, {} as Record<string, Suit>);
 
-                        return acc;
-                    }, {} as Record<string, Suit>);
-
-                    // Add suits
-                    Object.values(filteredSuits).forEach(suit => suits.push(suit));
-
-                    // Remove all pieces for the suit that was used to seed everything
-                    Object.keys(itemsByType).forEach(key => {
-                        const itemSlot = key as ItemSlot;
-                        const targetItem = sourceSuit.items.find(item => item.slot === itemSlot);
-                        itemsByType[itemSlot] = itemsByType[itemSlot].filter(item => item !== targetItem);
-                    });
-                }
-
-                return suitBuilderActions.UserActions.buildSuccess({ suits: suits.sort((a, b) => b.score - a.score) });
+                return suitBuilderActions.UserActions.buildSuccess({ suits: Object.values(filteredSuits).sort((a, b) => b.score - a.score) });
             })
         )
     });
