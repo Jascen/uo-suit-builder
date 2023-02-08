@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectAllProperties, selectAllPropertiesSorted } from 'src/app/state/selectors/suit-config.selectors';
-import { SuitCollectionGridComponent } from './suit-collection-grid/suit-collection-grid.component';
+import { SuitCollectionGridComponent } from '../../components/suit-collection-grid/suit-collection-grid.component';
 import { selectActiveSuit, selectAllSuits, selectGridFilter } from 'src/app/state/selectors/suit-collection.selectors';
 import * as suitCollectionActions from '../../state/actions/suit-collection.actions';
 
