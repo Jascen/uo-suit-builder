@@ -90,7 +90,9 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
   }
 
   onRowSelected(event: RowSelectedEvent<Suit>) {
-    this.suitSelected.emit(event.data.id);
+    if (event.node.isSelected()) {
+      this.suitSelected.emit(event.data.id);
+    }
   }
 
   constructor() { }
