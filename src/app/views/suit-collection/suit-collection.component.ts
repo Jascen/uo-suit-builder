@@ -28,6 +28,12 @@ export class SuitCollectionComponent implements OnDestroy {
     
     this.store.dispatch(suitCollectionActions.UserActions.setBaselineItems({ items: suit.items.map(item => item.id) }));
   }
+  
+  createVariations(suit: Suit) {
+    if (!suit) { return; }
+    
+    this.store.dispatch(suitCollectionActions.UserActions.createSuitVariations({ items: suit.items.map(item => item.id) }));
+  }
 
   onSuitSelected(suitId: string) {
     this.store.dispatch(suitCollectionActions.UserActions.selectSuit({ suitId }));

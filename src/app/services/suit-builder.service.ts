@@ -17,7 +17,12 @@ export enum BuilderAlgorithmType {
 })
 export class SuitBuilderService {
 
-  createSuits(algorithm: BuilderAlgorithmType, baselineSuit: Record<ItemSlot, Item>, itemsByType: Record<ItemSlot, Item[]>, suitConfigOptions: StatConfiguration[]) {
+  createSuits(
+    algorithm: BuilderAlgorithmType,
+    baselineSuit: Record<ItemSlot, Item>,
+    itemsByType: Record<ItemSlot, Item[]>,
+    suitConfigOptions: StatConfiguration[]
+  ): Suit[] {
     switch (algorithm) {
       case BuilderAlgorithmType.BruteForce:
         const remainingSlots = Object.entries(baselineSuit).filter(([key, value]) => !value).map(([key]) => key as ItemSlot);
@@ -34,6 +39,46 @@ export class SuitBuilderService {
       default:
         return [];
     }
+  }
+
+  createSuitVariationsByAllPermutations(
+    startingSuit: Record<ItemSlot, Item>,
+    itemsByType: Record<ItemSlot, Item[]>,
+    suitConfigOptions: StatConfiguration[]
+  ): Suit[] {
+    const suits = [] as Suit[];
+    const startingSuitAsSuit = {
+      summary: {},
+      items: []
+    } as Suit;
+    Object.values(startingSuit).forEach(suitItem => {
+      // Build permutations
+      const items = itemsByType[suitItem.slot];
+      const filteredItemsByType = {
+        ...itemsByType,
+        [suitItem.slot]: items.filter(item => item.id !== suitItem.id)
+      };
+      const suitsWithoutItem = this.buildAllPermutationsRecursive(0, [suitItem.slot], filteredItemsByType, suitConfigOptions, Object.values(startingSuit).filter(item => item.id !== suitItem.id), []);
+      suitsWithoutItem.forEach(suit => suits.push(suit));
+
+      // Build up starting suit
+      startingSuitAsSuit.items.push(suitItem);
+    });
+
+    // For each property, add up values
+    suitConfigOptions.forEach(property => {
+      let value = startingSuitAsSuit.summary[property.id] ?? 0;
+      startingSuitAsSuit.items.forEach(item => value += item.properties[property.id] ?? 0);
+
+      if (value) {
+        startingSuitAsSuit.summary[property.id] = value;
+      }
+    });
+
+    // Add starting suit back in to list
+    suits.push(startingSuitAsSuit);
+
+    return suits;
   }
 
   private buildAllPermutationsRecursive(
@@ -71,7 +116,7 @@ export class SuitBuilderService {
       const sourceSuit = this.chooseBestScoreRecursive({ ...baselineSuit }, itemsByType, suitConfigOptions);
 
       // Vary the suit
-      const suitVariations = this.createSuitVariations(sourceSuit, itemsByType, suitConfigOptions);
+      const suitVariations = this.createSuitVariationsByBestScore(sourceSuit, itemsByType, suitConfigOptions);
 
       // Add suits
       suitVariations.forEach(suit => suits.push(suit));
@@ -87,7 +132,7 @@ export class SuitBuilderService {
     return suits;
   }
 
-  private createSuitVariations(startingSuit: Suit, itemsByType: Record<ItemSlot, Item[]>, suitConfigOptions: StatConfiguration[]) {
+  private createSuitVariationsByBestScore(startingSuit: Suit, itemsByType: Record<ItemSlot, Item[]>, suitConfigOptions: StatConfiguration[]): Suit[] {
     const emptySuit = copyObjectKeys<Item, ItemSlot>(itemsByType);
 
     const suits = [] as Suit[];

@@ -20,18 +20,22 @@ app-suit-collection {
         display: flex;
         flex-direction: column;
         margin-left: 1rem;
+
+        .selected-suit-actions {
+            display: flex;
+            justify-content: space-between;
+
+            button+button {
+                margin-left: 1rem;
+            }
+        }
+
+        app-suit-summary {
+            margin-top: 1rem;
+        }
     }
 
     .page-header {
         margin-bottom: 1.5rem;
-    }
-
-    .page-actions {
-        display: flex;
-        justify-content: flex-end;
-
-        button+button {
-            margin-left: 1rem;
-        }
     }
 }

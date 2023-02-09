@@ -1,11 +1,6 @@
 <div class="page-header">
     <h4>Review Suits</h4>
     <h5>Evaluate suits and show the items that make it up.</h5>
-
-    <div class="page-actions">
-        <button *ngLet="selectedSuit$ | async as selectedSuit" mat-flat-button color="accent"
-            title="{{selectedSuit ? '' : 'Select a suit first'}}" (click)="copySuitToBuilder(selectedSuit)">Copy to builder</button>
-    </div>
 </div>
 
 <div class="content-container">
@@ -15,6 +10,15 @@
 
     <div class="selected-suit-summary">
         <h4>Selected Suit Summary</h4>
+
+        <div class="selected-suit-actions">
+            <button *ngLet="selectedSuit$ | async as selectedSuit" mat-flat-button color="accent"
+                title="{{selectedSuit ? '' : 'Select a suit first'}}" (click)="copySuitToBuilder(selectedSuit)">Require these items</button>
+
+            <button *ngLet="selectedSuit$ | async as selectedSuit" mat-flat-button color="primary"
+                title="{{selectedSuit ? '' : 'Select a suit first'}}" (click)="createVariations(selectedSuit)">Vary selected suit</button>
+        </div>
+
         <app-suit-summary [properties]="properties$ | async" [suit]="selectedSuit$ | async"></app-suit-summary>
     </div>
 </div>

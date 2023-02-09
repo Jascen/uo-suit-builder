@@ -16,5 +16,6 @@ export const UserActions = createActionGroup({
         'Update Grid Filter': props<{ gridFilter: {} }>(),
         'Reset Grid Filter': emptyProps(),
         'Set Baseline Items': props<{ items: number[] }>(),
+        'Create Suit Variations': props<{ items: number[] }>(),
     }
 });

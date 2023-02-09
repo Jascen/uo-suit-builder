@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store";
-import { Item, ItemSlot } from "../models/item-collection.models";
+import { ItemSlot } from "../models/item-collection.models";
 import { selectAll, selectEntities } from "../reducers/item-collection.reducers";
 import * as fromFeature from "../reducers";
 import { Suit } from "../models/suit-collection.models";
@@ -18,6 +18,12 @@ export const selectAllItems = createSelector(
 export const selectActiveItemIds = createSelector(
     fromFeature.selectItemCollectionState,
     state => state.activeIds
+);
+
+export const selectAllActiveItems = createSelector(
+    selectItemCollectionEntities,
+    selectActiveItemIds,
+    (itemEntities, activeIds) => activeIds.map(id => itemEntities[id])
 );
 
 export const selectBaselineSuit = createSelector(
