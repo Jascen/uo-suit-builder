@@ -7,8 +7,9 @@ import { copyObjectKeys } from '../utilities/object.utilities';
 
 
 export enum BuilderAlgorithmType {
+  BruteForce,
   BestScore,
-  UncommonProperties
+  UncommonProperties,
 }
 
 @Injectable({
@@ -18,6 +19,12 @@ export class SuitBuilderService {
 
   createSuits(algorithm: BuilderAlgorithmType, baselineSuit: Record<ItemSlot, Item>, itemsByType: Record<ItemSlot, Item[]>, suitConfigOptions: StatConfiguration[]) {
     switch (algorithm) {
+      case BuilderAlgorithmType.BruteForce:
+        const remainingSlots = Object.entries(baselineSuit).filter(([key, value]) => !value).map(([key]) => key as ItemSlot);
+        const suits = this.buildAllPermutationsRecursive(0, remainingSlots, itemsByType, suitConfigOptions, Object.values(baselineSuit).filter(item => !!item), []);
+        suits.sort((a, b) => b.score - a.score);
+        return suits;
+
       case BuilderAlgorithmType.UncommonProperties:
         return this.chooseUncommonProperties(baselineSuit, itemsByType, suitConfigOptions);
 
@@ -27,6 +34,33 @@ export class SuitBuilderService {
       default:
         return [];
     }
+  }
+
+  private buildAllPermutationsRecursive(
+    slotPosition: number,
+    itemSlots: ItemSlot[],
+    itemsBySlot: Record<string, Item[]>,
+    suitConfigOptions: StatConfiguration[],
+    currentSuitItems: Item[],
+    suits: Suit[]
+  ): Suit[] {
+    const currentSlot = itemSlots[slotPosition];
+    const items = itemsBySlot[currentSlot];
+    if (!items?.length) { return suits; }
+
+    const isLeaf = itemSlots.length - 1 < slotPosition + 1;
+    if (isLeaf) {
+      items.forEach(item => {
+        const suit = this.tryCreateSuit(item, currentSuitItems, suitConfigOptions, true, { mustMeetAllMinimums: false });
+        if (!suit) { return; }
+
+        suits.push(suit); // Add
+      });
+    } else {
+      items.forEach(item => this.buildAllPermutationsRecursive(slotPosition + 1, itemSlots, itemsBySlot, suitConfigOptions, [...currentSuitItems, item], suits));
+    }
+
+    return suits;
   }
 
   private createSuitIncrementally(baselineSuit: Record<ItemSlot, Item>, itemsByType: Record<ItemSlot, Item[]>, suitConfigOptions: StatConfiguration[]): Suit[] {
@@ -152,7 +186,7 @@ export class SuitBuilderService {
     suitConfigOptions: StatConfiguration[],
     isCompleteSuit: boolean,
     options: SuitScoringOptions
-  ) {
+  ): Suit {
     let score = 0;
     const summary = {} as Record<string, number>;
 

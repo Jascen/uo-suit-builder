@@ -89,19 +89,26 @@ export class ItemCollectionEffects {
             concatLatestFrom(() => [
                 this.store.select(fromSuitConfig.selectAllFilterableProperties),
                 this.store.select(fromItemCollection.selectAllItemsIgnoreBaseline),
+                this.store.select(fromItemCollection.selectActiveItemIds),
                 this.store.select(fromItemCollection.selectBaselineSuit),
             ]),
 
-            map(([action, suitConfigOptions, items, baselineSuit2]) => {
+            map(([action, suitConfigOptions, items, selectedItemIds, baselineSuit2]) => {
+                const itemIds = new Set<number>();
+                selectedItemIds.forEach(id => itemIds.add(id));
+
                 const baselineSuit = {} as Record<ItemSlot, Item>;
                 const itemsByType = items.reduce((acc, item) => {
-                    if (!acc[item.slot]) {
-                        acc[item.slot] = [];
-                        // Seed baseline suit with Keys
-                        baselineSuit[item.slot] = null;
-                    }
 
-                    acc[item.slot].push(item);
+                    if (itemIds.has(item.id)) {
+                        if (!acc[item.slot]) {
+                            acc[item.slot] = [];
+                            // Seed baseline suit with Keys
+                            baselineSuit[item.slot] = null;
+                        }
+
+                        acc[item.slot].push(item);
+                    }
 
                     return acc;
                 }, {} as Record<ItemSlot, Item[]>);
@@ -109,7 +116,11 @@ export class ItemCollectionEffects {
                 // Set baseline suit Values if we have any
                 baselineSuit2.items.forEach(item => baselineSuit[item.slot] = item);
 
-                const suits = this.suitBuilderService.createSuits(BuilderAlgorithmType.UncommonProperties, baselineSuit, itemsByType, suitConfigOptions);
+                const totalSuitPermutations = Object.values(itemsByType).reduce((acc, items) => acc * items.length, 1);
+                const algorithm = totalSuitPermutations < 1_000_000 ? BuilderAlgorithmType.BruteForce : BuilderAlgorithmType.UncommonProperties;
+                console.log(`Performing brute force suit creation would create ${totalSuitPermutations} suits.`);
+
+                const suits = this.suitBuilderService.createSuits(algorithm, baselineSuit, itemsByType, suitConfigOptions);
 
                 // De-dupe the suits
                 const filteredSuits = suits.reduce((acc, suit) => {
