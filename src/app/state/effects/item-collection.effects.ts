@@ -93,18 +93,18 @@ export class ItemCollectionEffects {
                 this.store.select(fromItemCollection.selectBaselineSuit),
             ]),
 
-            map(([action, suitConfigOptions, items, selectedItemIds, baselineSuit2]) => {
+            map(([action, suitConfigOptions, items, selectedItemIds, baselineSuit]) => {
                 const itemIds = new Set<number>();
                 selectedItemIds.forEach(id => itemIds.add(id));
 
-                const baselineSuit = {} as Record<ItemSlot, Item>;
+                const startingSuit = {} as Record<ItemSlot, Item>;
                 const itemsByType = items.reduce((acc, item) => {
 
                     if (itemIds.has(item.id)) {
                         if (!acc[item.slot]) {
                             acc[item.slot] = [];
                             // Seed baseline suit with Keys
-                            baselineSuit[item.slot] = null;
+                            startingSuit[item.slot] = null;
                         }
 
                         acc[item.slot].push(item);
@@ -114,13 +114,12 @@ export class ItemCollectionEffects {
                 }, {} as Record<ItemSlot, Item[]>);
 
                 // Set baseline suit Values if we have any
-                baselineSuit2.items.forEach(item => baselineSuit[item.slot] = item);
+                baselineSuit.items.forEach(item => startingSuit[item.slot] = item);
 
                 const totalSuitPermutations = Object.values(itemsByType).reduce((acc, items) => acc * items.length, 1);
                 const algorithm = totalSuitPermutations < 1_000_000 ? BuilderAlgorithmType.BruteForce : BuilderAlgorithmType.UncommonProperties;
-                console.log(`Performing brute force suit creation would create ${totalSuitPermutations} suits.`);
 
-                const suits = this.suitBuilderService.createSuits(algorithm, baselineSuit, itemsByType, suitConfigOptions);
+                const suits = this.suitBuilderService.createSuits(algorithm, startingSuit, itemsByType, suitConfigOptions);
 
                 // De-dupe the suits
                 const filteredSuits = suits.reduce((acc, suit) => {
