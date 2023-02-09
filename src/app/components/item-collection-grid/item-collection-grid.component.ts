@@ -102,24 +102,25 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
   private setSelectedState(selectedRowIds: number[], gridApi?: GridApi) {
     if (!gridApi) { return; }
 
-    gridApi.deselectAll();
-    if (!selectedRowIds?.length) { return; }
+    if (!selectedRowIds?.length) {
+      gridApi.deselectAll();
+      return;
+    }
 
     let selectedNode: IRowNode<Item>;
     selectedRowIds.forEach(id => {
       const rowNode = gridApi.getRowNode(id.toString());
       if (!rowNode) { return; }
+      if (selectedNode?.isSelected()) { return; }
 
       // Set the previous one if we set it.
-      if (selectedNode) {
-        selectedNode.setSelected(true, false, true);
-      }
+      selectedNode?.setSelected(true, false, true);
 
       // Store it so we can execute a refresh on the final one
       selectedNode = rowNode;
     });
 
-    if (selectedNode) {
+    if (selectedNode && !selectedNode?.isSelected()) {
       selectedNode.setSelected(true, false, false);
     }
   }
@@ -144,7 +145,7 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['loading'] || changes['rowData']) {
-        this._reloadData$.next(null);
+      this._reloadData$.next(null);
     }
   }
 
