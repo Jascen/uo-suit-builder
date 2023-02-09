@@ -11,5 +11,8 @@ export const UserActions = createActionGroup({
         'Select Items': props<{ itemIds: number[] }>(),
         'Build': emptyProps(),
         'Build Approved': props<{ properties: StatConfigurationUpdate[] }>(),
+        'Add Baseline Item': props<{ itemId: number }>(),
+        'Remove Baseline Item': props<{ itemId: number }>(),
+        'Set Baseline Items': props<{ items: number[] }>(),
     }
 });

@@ -88,22 +88,28 @@ export class ItemCollectionEffects {
 
             concatLatestFrom(() => [
                 this.store.select(fromSuitConfig.selectAllFilterableProperties),
-                this.store.select(fromItemCollection.selectItemCollectionEntities),
-                this.store.select(fromItemCollection.selectActiveItemIdss),
+                this.store.select(fromItemCollection.selectAllItemsIgnoreBaseline),
+                this.store.select(fromItemCollection.selectBaselineSuit),
             ]),
 
-            map(([action, suitConfigOptions, itemEntities, itemIds]) => {
-                const itemsByType = itemIds.reduce((acc, itemId) => {
-                    const item = itemEntities[itemId];
-                    if (item) {
-                        acc[item.slot] ??= [];
-                        acc[item.slot].push(item);
+            map(([action, suitConfigOptions, items, baselineSuit2]) => {
+                const baselineSuit = {} as Record<ItemSlot, Item>;
+                const itemsByType = items.reduce((acc, item) => {
+                    if (!acc[item.slot]) {
+                        acc[item.slot] = [];
+                        // Seed baseline suit with Keys
+                        baselineSuit[item.slot] = null;
                     }
+
+                    acc[item.slot].push(item);
 
                     return acc;
                 }, {} as Record<ItemSlot, Item[]>);
-                const suits = this.suitBuilderService.createSuits(BuilderAlgorithmType.UncommonProperties, itemsByType, suitConfigOptions);
-                // const suits = this.suitBuilderService.createSuits(BuilderAlgorithmType.BestScore, itemsByType, suitConfigOptions);
+
+                // Set baseline suit Values if we have any
+                baselineSuit2.items.forEach(item => baselineSuit[item.slot] = item);
+
+                const suits = this.suitBuilderService.createSuits(BuilderAlgorithmType.UncommonProperties, baselineSuit, itemsByType, suitConfigOptions);
 
                 // De-dupe the suits
                 const filteredSuits = suits.reduce((acc, suit) => {

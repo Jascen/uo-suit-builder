@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
-import { ColDef, GridApi, GridReadyEvent, IRowNode, SelectionChangedEvent } from 'ag-grid-community';
+import { ColDef, GridApi, GridReadyEvent, IRowNode, RowDropZoneParams, SelectionChangedEvent } from 'ag-grid-community';
 import { Subject, BehaviorSubject, filter, startWith, switchMap, takeUntil, tap } from 'rxjs';
 import { FloatingGreaterThanOrEqualComponent } from 'src/app/components-grid/floating-greater-than-or-equal/floating-greater-than-or-equal.component';
 import { Item } from 'src/app/state/models/item-collection.models';
@@ -35,6 +35,7 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
   @Input() selectedIds: number[];
 
   @Output() selectedRowsChanged = new EventEmitter<number[]>();
+  @Output() gridInitialized = new EventEmitter<GridApi>();
 
   private _gridApi!: GridApi;
   private readonly _destroyed$ = new Subject();
@@ -61,6 +62,8 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
     const columnDefinitions = [] as PageColDef[];
     this.addTypedColumns(columnDefinitions,
       {
+        rowDrag: true,
+        rowDragText: (params: { rowNode?: { data: Item } }, dragItemCount) => params.rowNode!.data.slot as string,
         field: 'name',
         headerName: 'Name',
         width: 200,
@@ -133,11 +136,15 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
     this.selectedRowsChanged.emit(selectedRows.map(item => item.id));
   }
 
+  setDropzone(params: RowDropZoneParams) {
+    this._gridApi.addRowDropZone(params);
+  }
+
   constructor() { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['loading'] || changes['rowData']) {
-      this._reloadData$.next(null);
+        this._reloadData$.next(null);
     }
   }
 
@@ -149,6 +156,7 @@ export class ItemCollectionGridComponent implements OnInit, OnChanges, OnDestroy
   ngOnInit(): void {
     this._gridLoaded$.pipe(
       filter(loaded => loaded),
+      tap(() => this.gridInitialized.emit(this._gridApi)),
 
       switchMap(() => this._reloadData$.pipe(startWith({}))),
       tap(() => {

@@ -1,12 +1,14 @@
 import { createEntityAdapter, EntityAdapter, EntityState } from "@ngrx/entity";
 import { createReducer, on } from "@ngrx/store";
 import { Item } from "../models/item-collection.models";
-import * as fromActions from '../actions/item-collection.actions';
+import * as itemCollectionActions from '../actions/item-collection.actions';
+import * as suitCollectionActions from '../actions/suit-collection.actions';
 
 
 export interface ItemCollectionState {
     items: EntityState<Item>;
     activeIds: number[];
+    baselineItems: number[]
 }
 
 export const itemAdapter: EntityAdapter<Item> = createEntityAdapter<Item>({
@@ -18,22 +20,47 @@ export const itemAdapter: EntityAdapter<Item> = createEntityAdapter<Item>({
 
 export const initialState = {
     items: itemAdapter.getInitialState(),
+    baselineItems: [],
+    activeIds: []
 } as ItemCollectionState;
 
 export const reducer = createReducer(
     initialState,
-    on(fromActions.UserActions.importSuccess, (state, { items }): ItemCollectionState => {
+    on(itemCollectionActions.UserActions.importSuccess, (state, { items }): ItemCollectionState => {
         return {
             ...state,
             items: itemAdapter.setAll(items, state.items)
         }
     }),
-    on(fromActions.UserActions.selectItems, (state, { itemIds }): ItemCollectionState => {
+    on(itemCollectionActions.UserActions.selectItems, (state, { itemIds }): ItemCollectionState => {
+        if (itemIds.length === 0 && state.activeIds.length === 0) { return state; }
+
         return {
             ...state,
             activeIds: itemIds
         }
-    })
+    }),
+    on(itemCollectionActions.UserActions.addBaselineItem, (state, { itemId }): ItemCollectionState => {
+        return {
+            ...state,
+            baselineItems: [...state.baselineItems, itemId]
+        }
+    }),
+    on(itemCollectionActions.UserActions.removeBaselineItem, (state, { itemId }): ItemCollectionState => {
+        return {
+            ...state,
+            baselineItems: state.baselineItems.filter(id => id !== itemId)
+        }
+    }),
+    on(suitCollectionActions.UserActions.setBaselineItems,
+        itemCollectionActions.UserActions.setBaselineItems,
+        (state, { items }): ItemCollectionState => {
+            return {
+                ...state,
+                baselineItems: items
+            }
+        }
+    ),
 );
 
 export const {

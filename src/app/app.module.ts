@@ -28,15 +28,15 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatListModule } from '@angular/material/list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PropertyConfigurationControlComponent } from './components/property-configuration-control/property-configuration-control.component';
-import { ItemDetailListComponent } from './components/item-detail-list/item-detail-list.component';
+import { DetailListComponent } from './components/detail-list/detail-list.component';
 import { NgLetDirective } from './directives/ng-let.directive';
 import { MatDialogModule } from '@angular/material/dialog';
-import { ItemListComponent } from './components/item-list/item-list.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { BuildRequestSummaryDialogComponent } from './dialogs/build-request-summary-dialog/build-request-summary-dialog.component';
 import { PropertyRangeControlComponent } from './components/property-range-control/property-range-control.component';
 import { FileDragDropDirective } from './directives/file-drag-drop.directive';
 import { FloatingGreaterThanOrEqualComponent } from './components-grid/floating-greater-than-or-equal/floating-greater-than-or-equal.component';
+import { SuitSummaryComponent } from './components/suit-summary/suit-summary.component';
 
 
 ModuleRegistry.registerModules([
@@ -57,12 +57,12 @@ ModuleRegistry.registerModules([
     PropertyConfigurationComponent,
     PropertyConfigurationFormComponent,
     PropertyConfigurationControlComponent,
-    ItemDetailListComponent,
-    ItemListComponent,
+    DetailListComponent,
     BuildRequestSummaryDialogComponent,
     PropertyRangeControlComponent,
     FileDragDropDirective,
     FloatingGreaterThanOrEqualComponent,
+    SuitSummaryComponent,
   ],
   imports: [
     BrowserModule,
@@ -82,7 +82,7 @@ ModuleRegistry.registerModules([
     MatListModule,
     MatFormFieldModule,
     MatDialogModule,
-    MatExpansionModule
+    MatExpansionModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

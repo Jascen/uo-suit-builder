@@ -1,6 +1,6 @@
 <ul>
     <li *ngFor="let property of properties">
         <div class="item-name">{{ property.name }}</div>
-        <div class="item-value">{{ dataSource[property.id] }}</div>
+        <div class="item-value">{{ dataSource ? dataSource[property.id] : null }}</div>
     </li>
 </ul>

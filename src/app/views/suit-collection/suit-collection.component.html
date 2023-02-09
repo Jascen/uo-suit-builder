@@ -11,12 +11,8 @@
         [gridFilter]="gridFilter$ | async" [loading]="false" (suitSelected)="onSuitSelected($event)"
         (filterChanged)="onFilterChanged($event)"></app-suit-collection-grid>
 
-    <div class="suit-summary" *ngLet="selectedSuit$ | async as selectedSuit">
-        <ng-container *ngIf="selectedSuit">
-            <app-item-detail-list [properties]="properties$ | async"
-                [dataSource]="selectedSuit.summary"></app-item-detail-list>
-
-            <app-item-list [items]="selectedSuit.items" [properties]="properties$ | async"></app-item-list>
-        </ng-container>
+    <div class="selected-suit-summary">
+        <h4>Selected Suit Summary</h4>
+        <app-suit-summary [properties]="properties$ | async" [suit]="selectedSuit$ | async"></app-suit-summary>
     </div>
 </div>

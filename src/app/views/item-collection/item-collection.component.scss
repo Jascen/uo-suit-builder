@@ -3,9 +3,23 @@ app-item-collection {
     display: flex;
     flex-direction: column;
     margin: 1rem;
+    overflow: auto;
 
     app-item-collection-grid {
         flex: 1;
+    }
+
+    .content-container {
+        display: flex;
+        flex-direction: row;
+        flex: 1;
+        overflow: auto;
+    }
+
+    .required-item-summary {
+        display: flex;
+        flex-direction: column;
+        margin-left: 1rem;
     }
 
     .page-header {
@@ -16,7 +30,7 @@ app-item-collection {
         display: flex;
         justify-content: flex-end;
 
-        button + button {
+        button+button {
             margin-left: 1rem;
         }
     }

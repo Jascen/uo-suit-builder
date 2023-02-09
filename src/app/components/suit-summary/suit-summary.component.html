@@ -1,0 +1,14 @@
+<app-detail-list [properties]="properties" [dataSource]="suit?.summary"></app-detail-list>
+
+<mat-accordion *ngIf="suit">
+    <mat-expansion-panel *ngFor="let item of suit.items">
+        <mat-expansion-panel-header>
+            <mat-panel-title>{{ item.slot }}</mat-panel-title>
+            <mat-panel-description>{{ item.name }}</mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <app-detail-list [properties]="properties" [dataSource]="item.properties"></app-detail-list>
+
+        <button *ngIf="canRemoveItems" mat-flat-button color="warn" (click)="itemRemoved.emit(item.id)">Remove Item</button>
+    </mat-expansion-panel>
+</mat-accordion>

@@ -1,0 +1,24 @@
+app-suit-summary {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    height: 100%;
+    overflow: auto;
+
+    app-detail-list {
+        flex: 1;
+        overflow: auto;
+        max-height: 50%;
+    }
+
+    mat-accordion {
+        flex: 1;
+        overflow: auto;
+        padding-top: 1rem;
+
+        button {
+            width: 100%;
+            margin-top: 1rem;
+        }
+    }
+}

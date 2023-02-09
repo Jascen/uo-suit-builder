@@ -1,6 +1,4 @@
-app-item-detail-list {
-    padding: 0.5rem;
-
+app-detail-list {
     ul {
         list-style: none;
         margin: 0;
@@ -12,6 +10,7 @@ app-item-detail-list {
         justify-content: space-between;
         border-bottom: solid 1px;
         border-color: #68686e;
+        padding-right: 0.5rem;
 
         &+li {
             margin-top: 0.125rem;

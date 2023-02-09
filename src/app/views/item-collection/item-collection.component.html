@@ -12,8 +12,16 @@
         </div>
     </div>
 
-    <app-item-collection-grid [properties]="properties$ | async" [rowData]="items$ | async"
-        [selectedIds]="selectedIds" [loading]="false" (selectedRowsChanged)="onSelectedRowsChanged($event)"
-        fileDragDrop
-        (fileDropped)="onFileSelected($event)"></app-item-collection-grid>
+    <div class="content-container" *ngLet="properties$ | async as properties">
+        <app-item-collection-grid [properties]="properties" [rowData]="filteredItems$ | async"
+            [selectedIds]="selectedIds" [loading]="false" (selectedRowsChanged)="onSelectedRowsChanged($event)"
+            fileDragDrop (fileDropped)="onFileSelected($event)"
+            (gridInitialized)="onItemGridInitialized($event)"></app-item-collection-grid>
+
+        <div class="required-item-summary" #dropZone>
+            <h4>Required Item Summary</h4>
+            <app-suit-summary [properties]="properties" [suit]="baselineSuit$ | async" [canRemoveItems]="true"
+                (itemRemoved)="onBaselineItemRemoved($event)"></app-suit-summary>
+        </div>
+    </div>
 </ng-container>

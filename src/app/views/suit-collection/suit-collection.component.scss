@@ -16,18 +16,10 @@ app-suit-collection {
         overflow: auto;
     }
 
-    .suit-summary {
+    .selected-suit-summary {
         display: flex;
         flex-direction: column;
-        width: 400px;
         margin-left: 1rem;
-        overflow: auto;
-
-        app-item-detail-list {
-            margin-top: 1rem;
-            flex: 1;
-            overflow: auto;
-        }
     }
 
     .page-header {
