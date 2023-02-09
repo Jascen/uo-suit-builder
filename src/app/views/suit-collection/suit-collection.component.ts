@@ -4,6 +4,7 @@ import { selectAllFilterableProperties, selectAllProperties } from 'src/app/stat
 import { SuitCollectionGridComponent } from '../../components/suit-collection-grid/suit-collection-grid.component';
 import { selectActiveSuit, selectAllSuits, selectGridFilter } from 'src/app/state/selectors/suit-collection.selectors';
 import * as suitCollectionActions from '../../state/actions/suit-collection.actions';
+import { Suit } from 'src/app/state/models/suit-collection.models';
 
 
 @Component({
@@ -21,6 +22,12 @@ export class SuitCollectionComponent implements OnDestroy {
   readonly properties$ = this.store.select(selectAllProperties);
   readonly filteredProperties$ = this.store.select(selectAllFilterableProperties);
   readonly gridFilter$ = this.store.select(selectGridFilter);
+
+  copySuitToBuilder(suit: Suit) {
+    if (!suit) { return; }
+    
+    this.store.dispatch(suitCollectionActions.UserActions.setBaselineItems({ items: suit.items.map(item => item.id) }));
+  }
 
   onSuitSelected(suitId: string) {
     this.store.dispatch(suitCollectionActions.UserActions.selectSuit({ suitId }));
