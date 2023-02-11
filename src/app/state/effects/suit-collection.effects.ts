@@ -19,7 +19,7 @@ export class SuitCollectionEffects {
             ofType(suitCollectionActions.UserActions.createSuitVariations),
 
             concatLatestFrom(() => [
-                this.store.select(fromSuitConfig.selectAllFilterableProperties),
+                this.store.select(fromSuitConfig.selectAllProperties),
                 this.store.select(fromItemCollection.selectAllActiveItems),
                 this.store.select(fromItemCollection.selectItemCollectionEntities),
             ]),

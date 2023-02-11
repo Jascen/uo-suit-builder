@@ -87,7 +87,7 @@ export class ItemCollectionEffects {
             ofType(itemCollectionActions.UserActions.buildApproved),
 
             concatLatestFrom(() => [
-                this.store.select(fromSuitConfig.selectAllFilterableProperties),
+                this.store.select(fromSuitConfig.selectAllProperties),
                 this.store.select(fromItemCollection.selectAllItemsIgnoreBaseline),
                 this.store.select(fromItemCollection.selectActiveItemIds),
                 this.store.select(fromItemCollection.selectBaselineSuit),

@@ -24,17 +24,21 @@ export class SuitBuilderService {
     suitConfigOptions: StatConfiguration[]
   ): Suit[] {
     switch (algorithm) {
-      case BuilderAlgorithmType.BruteForce:
+      case BuilderAlgorithmType.BruteForce: {
         const remainingSlots = Object.entries(baselineSuit).filter(([key, value]) => !value).map(([key]) => key as ItemSlot);
         const suits = this.buildAllPermutationsRecursive(0, remainingSlots, itemsByType, suitConfigOptions, Object.values(baselineSuit).filter(item => !!item), []);
         suits.sort((a, b) => b.score - a.score);
+
         return suits;
+      }
 
-      case BuilderAlgorithmType.UncommonProperties:
+      case BuilderAlgorithmType.UncommonProperties: {
         return this.chooseUncommonProperties(baselineSuit, itemsByType, suitConfigOptions);
+      }
 
-      case BuilderAlgorithmType.BestScore:
+      case BuilderAlgorithmType.BestScore: {
         return this.createSuitIncrementally(baselineSuit, itemsByType, suitConfigOptions);
+      }
 
       default:
         return [];
@@ -54,6 +58,8 @@ export class SuitBuilderService {
     Object.values(startingSuit).forEach(suitItem => {
       // Build permutations
       const items = itemsByType[suitItem.slot];
+      if (!items?.length) { return; }
+
       const filteredItemsByType = {
         ...itemsByType,
         [suitItem.slot]: items.filter(item => item.id !== suitItem.id)
@@ -256,10 +262,11 @@ export class SuitBuilderService {
 
         if (property.maximum < value) {
           // Penalize for being over maximum
-          score -= (property.scalingFactor / 2) * (value - property.maximum);
+          // Effectively a scaling factor of 1.0 for all penalties. A property w/ a higher scaling factor should not have a higher penalty. 
+          score -= (value - property.maximum);
         } else {
-          // 1/2 or 1/4 benefit for target -> maximum
-          score += (property.scalingFactor / 4) * (value - property.target); // Half benefit
+          // Apply 1/4 the benefit for any number over the target
+          score += (property.scalingFactor / 4) * (value - property.target);
         }
       } else {
         // Score up to the value
