@@ -3,13 +3,9 @@ import { ColDef, FilterChangedEvent, GridApi, GridReadyEvent, RowSelectedEvent }
 import { Subject, BehaviorSubject, filter, startWith, switchMap, takeUntil, tap } from 'rxjs';
 import { FloatingGreaterThanOrEqualComponent } from 'src/app/components-grid/floating-greater-than-or-equal/floating-greater-than-or-equal.component';
 import { Suit } from 'src/app/state/models/suit-collection.models';
+import { StatConfiguration } from 'src/app/state/models/suit-config.models';
 
 
-export interface ItemProperty {
-  id: string;
-  shortName: string;
-  name: string;
-}
 
 interface PageColDef extends ColDef<Suit> {
 }
@@ -29,7 +25,7 @@ export enum GridFilterModule {
 })
 export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy {
 
-  @Input() properties!: ItemProperty[];
+  @Input() properties!: StatConfiguration[];
   @Input() rowData!: Suit[];
   @Input() loading: boolean = true;
   @Input() gridFilter: {};
@@ -42,7 +38,7 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
   private readonly _gridLoaded$ = new BehaviorSubject<boolean>(false);
   private readonly _reloadData$ = new BehaviorSubject<any>(null);
 
-  private createColumns(itemProperties: ItemProperty[]) {
+  private createColumns(itemProperties: StatConfiguration[]) {
     const defaultColDef = {
       sortable: true,
       resizable: true,
@@ -56,13 +52,30 @@ export class SuitCollectionGridComponent implements OnInit, OnChanges, OnDestroy
     } as PageColDef;
 
     const columnDefinitions = [] as PageColDef[];
-
     itemProperties.forEach(property => {
-      columnDefinitions.push({
+      const headerName = property.shortName || property.name;
+      const tooltipValue = property.minimum !== property.target
+        ? `${headerName} (${property.minimum} to ${property.target})`
+        : `${headerName} (${property.minimum})`;
+      const colDef = {
         field: property.id,
-        headerName: property.shortName || property.name,
-        valueGetter: params => params.data?.summary ? params.data.summary[property.id] : null
-      } as PageColDef);
+        headerName: headerName,
+        headerTooltip: tooltipValue,
+        valueGetter: params => params.data?.summary ? params.data.summary[property.id] : null,
+      } as PageColDef;
+
+      const addMinimum = 0 < property.minimum;
+      const addTarget = 0 < property.target;
+      const addHigh = 0 < property.maximum;
+      if (addMinimum || addTarget || addHigh) {
+        colDef.cellClassRules = {
+          'value-perfect': params => params.value === property.target,
+          'value-below-min': addMinimum ? params => params.value < property.minimum : null,
+          'value-above-max': addHigh ? params => property.target < params.value : null,
+        };
+      }
+
+      columnDefinitions.push(colDef);
     });
 
     return {

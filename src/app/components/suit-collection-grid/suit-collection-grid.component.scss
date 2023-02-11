@@ -1,0 +1,15 @@
+app-suit-collection-grid {
+    .ag-cell-value {
+        &.value-above-max {
+            color: orange;
+        }
+
+        &.value-below-min {
+            color: red;
+        }
+
+        &.value-perfect {
+            color: green;
+        }
+    }
+}
