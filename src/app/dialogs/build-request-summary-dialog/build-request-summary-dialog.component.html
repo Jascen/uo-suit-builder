@@ -2,27 +2,29 @@
 
 <div mat-dialog-content>
     <form [formGroup]="form">
-        <mat-expansion-panel *ngFor="let property of data.properties">
-            <mat-expansion-panel-header>
-                <mat-panel-title>{{ property.name }}</mat-panel-title>
-                <mat-panel-description>
-                    <ng-container *ngIf="form.controls[property.id]?.value as formControlValue">
-                        <div>({{formControlValue.scalingFactor}})</div>
+        <mat-accordion>
+            <mat-expansion-panel *ngFor="let property of data.properties">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>{{ property.name }}</mat-panel-title>
+                    <mat-panel-description>
+                        <ng-container *ngIf="form.controls[property.id]?.value as formControlValue">
+                            <div>({{formControlValue.scalingFactor}})</div>
 
-                        <div>
-                            <ng-container *ngIf="formControlValue.minimum !== formControlValue.target">
-                                {{formControlValue.minimum}} to {{formControlValue.target}}
-                            </ng-container>
-                            <ng-container *ngIf="formControlValue.minimum === formControlValue.target">
-                                {{formControlValue.minimum}}
-                            </ng-container>
-                        </div>
-                    </ng-container>
-                </mat-panel-description>
-            </mat-expansion-panel-header>
+                            <div>
+                                <ng-container *ngIf="formControlValue.minimum !== formControlValue.target">
+                                    {{formControlValue.minimum}} to {{formControlValue.target}}
+                                </ng-container>
+                                <ng-container *ngIf="formControlValue.minimum === formControlValue.target">
+                                    {{formControlValue.minimum}}
+                                </ng-container>
+                            </div>
+                        </ng-container>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
 
-            <app-property-range-control [formControl]="$any(form.get(property.id))"></app-property-range-control>
-        </mat-expansion-panel>
+                <app-property-range-control [formControl]="$any(form.get(property.id))"></app-property-range-control>
+            </mat-expansion-panel>
+        </mat-accordion>
     </form>
 </div>
 
