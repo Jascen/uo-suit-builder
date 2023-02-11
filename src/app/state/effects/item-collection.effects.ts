@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { filter, map, switchMap } from "rxjs";
+import { EMPTY, filter, map, switchMap } from "rxjs";
 import { Item, ItemSlot } from "../models/item-collection.models";
 import { BuilderAlgorithmType, SuitBuilderService } from "src/app/services/suit-builder.service";
 import { MatDialog } from "@angular/material/dialog";
@@ -50,8 +50,13 @@ export class ItemCollectionEffects {
         return this.actions$.pipe(
             ofType(itemCollectionActions.UserActions.build),
 
-            concatLatestFrom(() => this.store.select(fromSuitConfig.selectAllFilterableProperties)),
-            switchMap(([action, properties]) => {
+            concatLatestFrom(() => [
+                this.store.select(fromSuitConfig.selectAllFilterableProperties),
+                this.store.select(fromItemCollection.selectAllItems)
+            ]),
+            switchMap(([action, properties, items]) => {
+                if (!items.length) { return EMPTY; }
+
                 const dialogRef = this.dialog.open(BuildRequestSummaryDialogComponent, {
                     width: '500px',
                     data: {
