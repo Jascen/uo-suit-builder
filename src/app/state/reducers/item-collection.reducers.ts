@@ -29,7 +29,9 @@ export const reducer = createReducer(
     on(itemCollectionActions.UserActions.importSuccess, (state, { items }): ItemCollectionState => {
         return {
             ...state,
-            items: itemAdapter.setAll(items, state.items)
+            items: itemAdapter.setAll(items, state.items),
+            activeIds: items.map(item => item.id), // Auto-select
+            baselineItems: [], // Clear previously chosen items
         }
     }),
     on(itemCollectionActions.UserActions.selectItems, (state, { itemIds }): ItemCollectionState => {
