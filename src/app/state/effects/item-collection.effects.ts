@@ -122,7 +122,7 @@ export class ItemCollectionEffects {
                 baselineSuit.items.forEach(item => startingSuit[item.slot] = item);
 
                 const totalSuitPermutations = Object.values(itemsByType).reduce((acc, items) => acc * items.length, 1);
-                const algorithm = totalSuitPermutations < 1_000_000 ? BuilderAlgorithmType.BruteForce : BuilderAlgorithmType.UncommonProperties;
+                const algorithm = totalSuitPermutations < 500_000 ? BuilderAlgorithmType.BruteForce : BuilderAlgorithmType.UncommonProperties;
 
                 const suits = this.suitBuilderService.createSuits(algorithm, startingSuit, itemsByType, suitConfigOptions);
 
