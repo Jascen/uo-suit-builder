@@ -22,9 +22,10 @@ export class SuitCollectionEffects {
                 this.store.select(fromSuitConfig.selectAllProperties),
                 this.store.select(fromItemCollection.selectAllActiveItems),
                 this.store.select(fromItemCollection.selectItemCollectionEntities),
+                this.store.select(fromItemCollection.selectBaselineSuit),
             ]),
 
-            map(([action, suitConfigOptions, items, itemEntities]) => {
+            map(([action, suitConfigOptions, items, itemEntities, baselineSuit]) => {
                 const itemIds = new Set<number>();
                 action.items.forEach(itemId => itemIds.add(itemId));
 
@@ -35,7 +36,7 @@ export class SuitCollectionEffects {
                 });
 
                 const itemsByType = items.reduce((acc, item) => {
-
+                    
                     if (!itemIds.has(item.id)) {
                         acc[item.slot] ??= [];
                         acc[item.slot].push(item);
@@ -43,6 +44,9 @@ export class SuitCollectionEffects {
 
                     return acc;
                 }, {} as Record<ItemSlot, Item[]>);
+
+                // Baseline items are excluded from being Selected and need to be re-added
+                baselineSuit.items.forEach(item => itemsByType[item.slot] = [item]);
 
                 const suits = this.suitBuilderService.createSuitVariationsByAllPermutations(startingSuit, itemsByType, suitConfigOptions);
 
